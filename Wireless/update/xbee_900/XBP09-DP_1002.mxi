@@ -1,0 +1,73 @@
+[XBEE-PRO][XBP09-DP][0x1B][1][1002][0][0x0100][0][XBee-PRO 900]
+
+Networking
+==========
+[H][Networking][Change networking settings]
+[ID][0x7FFF][Modem VID][E;0-0x7FFF][Set/read radio modem Vendor Identification Number (VID).  Only radio modems with matching VIDs can communicate with each other. 0xFFFF means to use factory value.]
+[HP][0x0][Hopping Channel][E;0-7;Channels][Set/read spread spectrum channel on which modem communicates. Separate channels minimize interference between multiple sets of modems operating in the same vicinity.]
+[RR][0x3][Mac Retries][E;0-0xFF;Retries][Set/read maximum number of Mac level RF packet delivery attempts. If RR is non-zero packets sent from the radio will request an acknowledgement, and can be resent up to RR times if no acknowledgements are received.]
+
+Addressing
+==========
+[H][Addressing][Change addressing settings]
+[SH][][Serial Number High][N][Read high 32 bits of modems unique IEEE 64-bit Extended Address.]
+[SL][][Serial Number Low][N][Read low 32 bits of modems unique IEEE 64-bit Extended Address.]
+[DH][0][Destination Address High][E;0-0xFFFFFFFF][Set/read the upper 32 bits of the 64 bit destination extended address. 0x000000000000FFFF is the broadcast address.]
+[DL][0xFFFF][Destination Address Low][E;0-0xFFFFFFFF][Set/read the lower 32 bits of the 64 bit destination extended address. 0x000000000000FFFF is the broadcast address.]
+[NI][0x20][Node Identifier][S;0;20;ASCII;][Set/read Node Identifier string]
+[NT][0x3C][Node Discovery Backoff][E;0x20-0xFF ; x 100 ms][Set/read Node Discovery backoff register. This sets the maximum delay for Node Discovery responses to be sent (ND, DN).]
+
+Security
+========
+[H][Security][Change security parameters]
+[EE][0][Encryption Enable][c;Disabled ;Enabled][Enable or disable 128-bit AES encryption.]
+[KY][][AES Encryption Key][S;0;32;HEX;][Sets the 128-bit key used for encryption and decryption. This register can not be read.]
+
+Serial Interfacing
+==================
+[H][Serial Interfacing][Change modem interfacing options]
+[BD][3][Baud Rate][C;1200 ;2400 ;4800 ;9600 ;19200 ;38400 ;57600 ;115200; 230400][Set/read the serial interface baud rate for communication between modem serial port and host. Request non-standard baud rates with values above 0x80 using a terminal window. Read BD register to find actual baud rate achieved.]
+[NB][0][Parity][C;No Parity ;Even Parity ;Odd Parity ;Mark Parity ;Space Parity][Configure parity for the UART.]
+[RO][3][Packetization Timeout][E;0-0xFF ;x character times][Set/read number of character times of inter-character delay required before transmission begins. Set to zero to transmit characters as they arrive instead of buffering them into one RF packet.]
+[D7][1][DIO7 Configuration][C;Disable ;CTS flow control;NA;DI;DO Low;DO High; RS-485 Enable Low; RS-485 Enable High][Configure options for the DIO7 line of the module. Options include: CTS flow control, Digital Input and Output, or RS-485 enable control.]
+[D6][0][DIO6 Configuration][C;Disable ;RTS flow control;NA;DI;DO Low;DO High][Configure options for the DIO6 line of the module. Options include: RTS flow control, Digital Input and Output.]
+[FT][0x13F][Flow Control Threshold][E;0-0xFFFF;Bytes][Set/read the flow control threshold. De-assert CTS and/or send XOFF when FT bytes are in the UART receive buffer.]
+[AP][0][API Enable][C;API off;API without escapes;API with escapes][Packet mode API formats frames into packets from the RF link to the serial port.  It expects serial port packets to be formatted and transmits as a packet over the RF link.]
+[AO][0][API Options][E;0-1][Set the API Options register value.  0 - Received Data formatted as native API frame format.  1 - Received RF data formatted as Explicit Rx-Indicator.]
+
+I/O Settings
+============
+[H][I/O Settings][Modify DIO and ADC options]
+[D0][0][AD0/DIO0 Configuration][C;Disabled;NA;NA;DI;DO Low;DO High][Configure options for the AD0/DIO0 line of the module. Options include: Analog to Digital converter (future release), Digital Input and Output.]
+[D1][0][AD1/DIO1 Configuration][C;Disabled;NA;NA;DI;DO Low;DO High][Configure options for the AD1/DIO1 line of the module. Options include: Analog to Digital converter (future release), Digital Input and Output.]
+[D2][0][AD2/DIO2 Configuration][C;Disabled;NA;NA;DI;DO Low;DO High][Configure options for the AD2/DIO2 line of the module. Options include: Analog to Digital converter (future release), Digital Input and Output.]
+[D3][0][AD3/DIO3 Configuration][C;Disabled;NA;NA;DI;DO Low;DO High][Configure options for the AD3/DIO3 line of the module. Options include: Analog to Digital converter (future release), Digital Input and Output.]
+[D4][0][AD4/DIO4 Configuration][C;Disabled;NA;NA;DI;DO Low;DO High][Configure options for the AD4/DIO4 line of the module. Options include: Analog to Digital converter (future release), Digital Input and Output.]
+[D5][1][AD5/DIO5 Configuration][C;Disabled;Awake Indicator;NA;DI;DO Low;DO High][Configure options for the AD5/DIO5 line of the module. Options include: Analog to Digital converter(future release) , Digital Input and Output.]
+[P0][1][DIO10/RSSI/PWM0 Configuration][C;Disabled;RSSI PWM Output;PWM0 Output;DI;DO Low;DO High][Configure options for the DIO10/RSSI/PWM0 line of the module. Options include: RSSI PWM Output, PWM0 Output, Digital Input and Output.]
+[P1][0][DIO11/PWM1 Configuration][C;Disabled;NA;NA;DI;DO Low;DO High][Configure options for the DIO11/PWM1 line of the module. Options include: Digital Input and Output.]
+[P2][0][DIO12 Configuration][C;Disabled;NA;NA;DI;DO Low;DO High][Configure options for the DIO12 line of the module. Options include: Digital Input and Output.]
+[M0][0][PWM0 duty cycle][E;0-0x3FF][Sets the duty cycle of PWM0.]
+[M1][0][PWM1 duty cycle][E;0-0x3FF][Sets the duty cycle of PWM1.]
+[RP][0x20][RSSI PWM Timer][E;1-0xFF ;x 100 ms][Set/read PWM timer register. Set duration of PWM (pulse width modulation) signal output on the RSSI pin (P6). The signal duty cycle is updated with each received packet and is shut off when the timer expires.]
+[PR][0x7FFF][Pull-up Resistor Enable][E;0x0-0x7FFF][Set/read bitfield to configure internal pullup resistors status for I/O lines. 1=internal pullup enabled, 0=no internal pullup. Bitfield map:  (14)-DOUT, (13)DIO7/CTS, (12)-DIO11/PWM1, (11)-DIO10/PWM0/RSSI, (10)-DIO12, (9)-On/Sleep, (8)AD5/DIO5, (7)-DIN/Config, (6)-Sleep_Rq, (5)-DIO6/RTS, (4)-AD0/DIO0, (3)-AD1/DIO1, (2)-AD2/DIO2, (1)-AD3/DIO3, (0)-AD4/DIO4]
+
+AT Command Options
+==================
+[H][AT Command Options][Change AT command mode behavior]
+[CT][0x64][AT Command Mode Timeout][E;2-0x28F ;x 100ms][Set/read command mode timeout parameter. If no valid commands have been received within this time period, modem returns to Idle Mode from AT Command Mode.]
+[GT][0x3E8][Guard Times][E;0x2-0xCE4 ;x 1ms][Set required period of silence before, after and between the Command Mode Characters of the Command Mode Sequence (GT + CC + GT). The period of silence is used to prevent inadvertent entrance into AT Command Mode.]
+[CC][0x2B][Command Sequence Character][E;0-0xFF; Recommended: 0x20-0x7F (ASCII)][Set/read character value to be used to break from data mode to command mode. The default value (0x2B) is the ASCII code for the plus ('+') character.]
+
+Diagnostic Commands
+===================
+[H][Diagnostic Commands][Access diagnostic parameters]
+[VR][][Firmware Version][N][Read modem firmware version number.]
+[HV][][Hardware Version][N][Read modem hardware version number.]
+[%V][][Supply Voltage][N][Read the supply voltage of the module.  To get mV reading, divide the reading by 1023 (0x3FF) and multiply by 1200 (0x4B0). A response value of 0x8FE (2302 decimal) represents 2700mV, or 2.7V.]
+[ER][][Receive Error Count][N][Set/read number of RF Packets rejected because of bit errors in packet.]
+[GD][][Receive Good Count][N][Set/read number of RF Packets successfully received.]
+[TR][][Delivery Failure Count][N][Read number of RF packets sent where retries expire with no ACK received (when RR>0)]
+
+[HARDWARE_VERSION][HV][1][1][2]
+[SOFTWARE_COMPATABLITY][][][][]
