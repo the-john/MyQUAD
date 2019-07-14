@@ -1,0 +1,105 @@
+[XTEND][XT09][T][3][8021][0][0x2000][0][9XTEND 115K HOPPING (DigiMesh)]
+
+Networking
+==========
+
+[H][Networking][Configure addressing and delivery options]
+
+[ID][0x3332][Modem VID][E;0x10-0x7FFF][Set/read radio modem Vendor Identification Number (VID).  Only radio modems with matching VIDs can communicate with each other.]
+
+[HP][0x0][Hopping Channel][E;0-9;Channels][Set/read spread spectrum channel on which modem communicates. Separate channels minimize interference between multiple sets of modems operating in the same vicinity.]
+
+[DL][0x0000FFFF][Destination Address][E;0-0xFFFFFFFF][Set/read lower 32 bits of module's destination address.]
+
+[DH][0x00000000][Destination Address][E;0-0xFFFFFFFF][Set/read upper 32 bits of module's destination address.]
+
+[SH][][MAC Address High][N][Read most significant 32 bits of 64 bit address (contains MaxStream OUI and a pad byte)]
+
+[SL][][MAC Address Low][N][Read least significant 32 bits of 64 bit address]
+
+[NR][0x1][Network Retries][E;0-0xff;Network Retries][Set/read maximum number of network packet delivery attempts. If NR is non-zero, packets sent will request a network acknowledgement, and can be resent up to NR times if no acknowledgements are received.]
+
+[NH][0x7][Network Hops][E;0-0xff;Hops][Set/read maximum number of hops across the network.  This number doesn't limit # of hops; rather, it is used to calculate maximum network traversal time and must be set the same on all nodes in the network.]
+
+[NQ][0x3][RREQ Retries][E;0-0x0a;Retries][Set/read maximum number of route discovery retries allowed to find a path to the destination node. If NQ is zero, RREQ will only be sent once.]
+
+[NN][0x3][Network Delay Slots][E;0-0x0a;Delay Slots][Set/read the maximum number of delay slots before rebroadcasting a network packet.]
+
+
+Serial Interfacing
+================
+
+[H][Serial Interfacing][Configure serial (UART) interface and I/O line options]
+
+[BD][3][Baud Rate][C;1200;2400;4800;9600;19200;38400;57600;115200;230400][Select serial interface rate (speed for data transfer between radio modem and host).  Values from 0-8 select preset standard rates.  Values at 0x39 and above select actual baud rate.  Serial data rate does not have to match the RF data rate which is adjustable using the BR command.  If the serial data rate is set higher than the RF data rate, CTS may need to be observed to prevent DI buffer overrun.]
+
+[NB][0][Parity][C;None;Even;Odd;Mark;Space][Select parity settings for UART communications.]
+
+[SB][0][Stop Bits][C;1 Stop Bit;2 Stop Bits][Select number of stop bits used for UART communications.]
+
+[RB][0xC8][Packetization Threshold][E;0-0xD3;Bytes][Set/read character threshold. RF transmission is begun after receiving RB bytes, or after receiving at least 1 byte and seeing RO character times of silence on the UART.]
+
+[RO][3][Packetization Timeout][E;0-0xFFFF;UART Character Times][RF transmission begins after receiving RB bytes, or after receiving at least 1 byte and seeing RO character times of silence on the UART.  If RO=0, then RB bytes must be received before beginning transmission.]
+
+[CS][0][GPO1 Configuration][C;CTS flow control;RS-485 enable low;GPO1 static high;RS-485 enable high;GPO1 static low][Select behavior of Pin 9 of XTend Module, (CTS on DB9).]
+
+[RT][0][GPI1 Configuration][C;Unused;Unused;RTS Flow Control][Select function for Pin 10 of XTend Module, (RTS on DB9).]
+
+[CD][2][GPO2 Configuration][C;RX LED;GPO2 static high;GP02 static low;Unused;valid address][Select behavior of Pin 3 of XTend module, (DCD & DSR on DB9).]
+
+[FL][0][Software Flow Control][C;No software flow control;Use software flow control][Select flow control options. Enables software flow control (XON/XOFF) between radio modem and host.]
+
+[FT][0x16D][Flow Control Threshold][E;0-0x16D;Bytes][Set/read the flow control threshold. De-assert CTS and/or send XOFF when FT bytes are in the UART receive buffer.]
+
+[AP][0][API Enable][C;API off;API without escapes;API with escapes][Packet mode API formats frames into packets from the RF link to the serial port.  It expects serial port packets to be formatted and transmits as a packet over the RF link.]
+
+RF Interfacing
+============
+
+[H][RF Interfacing][Configure RF power level, RF data rate, etc.]
+
+[PL][4][TX Power Level][C;1 mW;10 mW;100 mW;500 mW;1 Watt][Select transmit power level. Note that modem requires 5 VDC supply (or greater) for full 1 Watt output power. If supply voltage is less than 5V, the radio will transmit at the highest power level possible and set a warning flag.]
+
+Diagnostics
+===========
+
+[H][Diagnostics][Commands used for displaying modem status information]
+
+[VR][][Firmware Version][N][Read module firmware version number]
+
+[HV][][Hardware Version][N][Read module hardware version number]
+
+[RP][0x20][RSSI PWM Timer][E;0-0xFF;x 100 ms][Set/read duration of PWM (pulse width modulated) output on pin 11. The PWM output encodes fade margin (RX signal strength relative to RX sensitivity) by varying the duty cycle of a 125Hz square wave.]
+
+[TP][][Board Temperature][N][Read current temperature of module in degrees Celsius (8-bit twos-complement, eg. 26C = 0x1A, -10C = 0xF6).]
+
+[%V][][Board Voltage][N][Read supply voltage to module (VCC) multiplied by 65536 (eg. 5.02V = 5.02*65536 = 0x5051F, maximum of 5 digits returned).]
+
+[DB][][Received Signal Strength][N][Read signal level of last good packet received (RSSI) in dB (reports absolute value, eg. -88dBm = 0x58, accurate between -40 dBm to RX sensitivity).]
+
+[ER][][Receive Error Count][N][Set/read number of RF Packets rejected because of bit errors in packet.]
+
+[GD][][Receive Good Count][N][Set/read number of RF Packets successfully received.]
+
+[TR][][Delivery Failure Count][N][Read number of RF packets sent where retries expire with no ACK received (when RR>0)]
+
+
+Command Mode behavior
+========================
+
+[H][Command Mode Options][Configure Command Mode behavior]
+
+[BT][0xA][Guard Time Before][E;0-0xFFFF;x 100 ms][Set/read required DI pin silent time before the Command Sequence Characters of the Command Mode Sequence (BT+CC_AT). The DI silent time is used to prevent inadvertent entrance into Command Mode.]
+
+[CC][0x2B][Command Sequence Character][E;0x20-0x7F][Set/read ASCII character to be used between Guard Times of the AT Command Mode Sequence (BT+CC+AT). The AT Command Mode Sequence causes the radio modem to enter Command Mode (from Idle Mode).]
+
+[AT][0xA][Guard Time After][E;2-0x7FFC;x 100 ms][Set/read required DI pin silent time after the Command Sequence Characters of the AT Command Mode Sequence (BT+CC+AT). The DI silent time is used to prevent inadvertent entrance into Command Mode.]
+
+[CT][0xC8][Command Mode Timeout][E;2-0xFFFF;x 100 ms][Set/read time period of inactivity (no valid commands received) after which the radio modem automatically exits from Command Mode and returns to Idle Mode.]
+
+
+[HARDWARE_VERSION][HV][1][1][2]
+[SOFTWARE_COMPATABLITY][][][][]
+//This is very important
+[CHECKSUM][0x0][0x1F][0x14][4]
+

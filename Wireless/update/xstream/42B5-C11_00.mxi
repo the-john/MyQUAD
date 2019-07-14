@@ -1,0 +1,64 @@
+[XSTREAM][XH9-009][C][0][42B5][0][0x80][0][Hopping]
+
+[H][AT Command Options][Commands that change AT command mode behavior]
+[CC][0x2B][Command Sequence Character][E;0x20-0x7F][Sets the ASCII character to be used between Buard Times of the AT Command Mode Sequence (BT+CC+AT). The AT Command Mode Sequence enters the radio modem to AT Command Mode (from Idle Mode).]
+[AT][0xA][Guard Time After][E;2-0xFFFF;x 100 ms][Sets required DI pin silent time after the Command Sequence Characters of the AT command Mode Sequence (BT+CC+AT). The DI silent time is used to prevent inadvertent entrance into AT Command Mode.]
+[BT][0xA][Guard Time Before][E;2-0xFFFF;x 100 ms][Set required DI pin silent time before the Command Sequence Characters of the Comand Mode Sequence (BT+CC_AT). The DI silent time is used to prevent inadvertent entrance into AT Command mode.]
+[CT][0xC8][Command Mode Timeout][E;0x2-0xFFFF;x 100 ms][Set time period of inactivity (no valid commands received) after which the radio modem automatically exits from AT Command Mode and returns to Idle Mode.]
+//Version 4.22
+[PC][0][Power-up Mode][C;Power-up to Idle Mode;Power-up to AT Command Mode][Select initial mode of operation after power-up, reset or wake from pin sleep. Parameter value '1' causes the radio modem to power directly to AT Command Mode instead of Idle Model (default).]
+
+[H][Diagnostic Commands][Commands that access read-only parameters]
+[ER][][Receive Error Count][N][Number of RF Packets detected by the receiver but not sent out the DO pin of radio modem due to bit errors.]
+[GD][][Receive Good Count][N][Number of RF Packets successfully received.]
+[VR][][Firmware Version][N][Read firmware version currently loaded on radio modem.]
+//Version 4.22
+[RS][][RSSI - Receive Signal Strength][N][Read the signal level of last good packet received]
+[TR][][Transmit Error Count][N][Number of RF packets sent with no ACK packet received. (When RR>0).]
+//Version 4.27C
+[SH][][Serial Number High][N][Read High 16 bits of unique serial number of radio modem.]
+[SL][][Serial Number Low][N][Read Low 16 bits of unique serial number of radio modem.]
+//version 42AB
+[RP][0][RSSI PWM Timer][E;0-0xFF;x 100 ms][Enable a PWM (pulse width modulation) output on the config pin (pin 9 of the OEM RF Module) which shows signal strength of RF packets.]
+
+[H][Networking][Enable communications in a networked environment]
+[DT][0][Destination Address][E;0-0xFFFF][Set the address that identifies the destination of the RF packet. Only radio modems having matching addresses can communitcate with each other.]
+[HP][0][Hopping Channel][E;0-6][Select hopping channel on which radio modem communicates. These channels are not non-interfering.]
+[MK][0xFFFF][Address Mask][E;0-0xFFFF][Set address mask to configure local and global address space.]
+[SY][0][Time before Initialization][E;0-0xFF;x 100 ms][Set mode that allows RF packets to be received with a shorter RF initializer. Warning: This command is only useful in a limited number of applications. Please see XStream Advanced manual before using.]
+//Version 4.22
+[RN][0][Delay Slots][E;0-0xFF slots][Sepecifies maximum number of delay slots used for random back-off algorithm after transmission failure.]
+[RR][0][Retries][E;0-0xFF][Specifies maximum number of RF Packet attempts. Receiving radio modem(s) must also have RR set to a non-zero value.]
+[TT][0xFFFF][Streaming Limit][E;0-0xFFFF][Set maximum number of continuous bytes transmitted by one radio modem before forcing a delay that allows other radio modems to transmit.]
+//Version 4.27C
+[ID][][Modem VID][N][Read radio modem (VID) Vendor Identification Number.  Only radio modems with matching VIDs can communicate with each other.]
+
+
+[H][Serial Interfacing Options][Allows changes to radio modem interfacing options]
+[BD][3][Interface Data Rate][C;1200;2400;4800;9600;19200;38400;57600][Sets serial (UART host) data rate (rate at which data is sent to the radio modem). Serial data rate is different than RF data rate which is fixed and set at the factory.  If the serial data rate is set higher than the RF data rate, CTS may need to be observed in order to prevent DI buffer overrun.]
+[RT][0][DI2 Configuration][C;Disable;Binary commands;RTS Flow Control][Select function for Digital Input 2. RTS/CMD signal - pin 5 of OEM RF Module.]
+[FL][0][Software Flow Control][C;No software flow control;Use software flow control][Enables serial software flow control on the radio modem. Hardware flow control CTS is on by default.]
+//Version 4.27B //The following parameter needs more work.
+[FT][][Flow Control Threshold][E;0-0xFFFF][Assert CTS or XOFF when FT bytes are in the receiver DO buffer.]
+//Version 4.27D 
+[CS][0][DO2 Configuration][C;Normal;RS-485 enable low;high;RS-485 enable high;low][Select behavior of Digital Output 2 (CTS signal is pin 1 of OEM RF Module).]
+[NB][0][Parity][C;8-bit no parity;8-bit even parity;8-bit odd parity;8-bit mark parity;8-bit space parity][Selects parity format. Settings 0-4 transfer only 8 bits over antenna port and generate the parity bit on the radio modem receiving side. NB=5 actually transfers 9 bits out the antenna port.]
+//Version 42B0
+[SB][0][Stop Bits][C;1 Stop Bit;2 Stop Bits][Select number of stop bits used for UART communications.]
+
+
+//Version 4.2AB
+[CD][0][DO3 configuration][C;RX LED;high;low;(reserved);RX LED - valid address only][Select behavior of Digital Output 3 (RX LED signal - pin 7 of OEM RF Module).]
+[RO][0][Packetization Timeout][E;0-0xFFFF;x 0.2 ms][Begin RF transmission after DI silent time of RO. TX begins when either RO or RB criteria are meet.]
+
+[H][Sleep (Low Power)][Radio modem can be put into Sleep Mode to reduce the amount of power consumed]
+[SM][0][Sleep Mode][C;No Sleep;Pin Sleep;Serial Port Sleep;Cyclic 0.5 second;Cyclic 1.0 second;Cyclic 2.0 second;Cyclic 4.0 second;Cyclic 8.0 second;Cyclic 16.0 second][Specifies Sleep Mode settings.]
+[LH][0x1][Wake-up Initializer Time][E;0-0xFF;x 100 ms][Set time of the Wake-up Initializer used to wake remote radios that are in cyclic sleep mode. Time of Wake-up Initializer should be longer than that of the remotes radio's cyclic sleep cycle (SM 2-8).]
+[HT][0xFFFF][Time before Wake-up Initializer][E;0-0xFFFF;x 100 ms][Sets time of inactivity, no serial or over-the-air data is sent or received, before a Wake-up Initializer is sent. Base station tracks awake-status of remote radios. HT of base radio should be set shorter than ST of remote radios.]
+[ST][0x64][Time before Sleep][E;0x10-0xFFFF;x 100 ms][Sets time period of inactivity (no serial or RF data is sent or received) before activating Sleep Mode - Only valid with Cyclic and Serial Port Sleep settings.]
+
+//Version 4.22
+[PW][0][Pin Wake-up][C;Disable;Enable][Enables pin wake-up from Cyclic Sleep Mode.]
+
+[HARDWARE_VERSION][HV][1][1][2]
+[SOFTWARE_COMPATABLITY][][][][]
