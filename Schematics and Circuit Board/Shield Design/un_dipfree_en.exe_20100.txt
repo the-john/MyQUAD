@@ -1,0 +1,291 @@
+SetupType=Custom
+GroupNames=|Main Group|App Data|Documents|
+UserData=||||
+Version=1.0
+ComposerVersion=10.0.1.4
+
+PROG_NAME=Novarm DipTrace
+COMPANY_URL=http://www.diptrace.com
+CHAR_SET=0
+FONT_NAME=Tahoma
+FONT_SIZE=8
+GET_HIDE_QSETUP_WATER_MARK=0
+GET_DIALOG_BITMAP_3D_FRAME=1
+GET_AUTO_UPDATE_EXE_FILE_NAME=
+GET_AUTO_UPDATE_EXE_DIR=C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design
+GET_PROG_EXE_NAME=C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Launcher.exe
+GET_DIALOG_STYLE_MODERN=1
+IS_RUNNING_TEST=0
+GET_CREATE_64BIT_SETUP=0
+GET_TEST_ADMIN_RIGHTS_UNINSTALL=0
+GET_IGNORE_ADMIN_TESTS_ON_VISTA=1
+GET_HIDE_ERR_MSG_UNINSTALL=0
+GET_HIDE_LOG_BTN_UNINSTALL=0
+SILENT_UNINSTALL=0
+HIDDEN_UNINSTALL=0
+
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\un_dipfree_en.exe_20100.txt);
+REMOVE_DIR(C:\ProgramData\DipTrace);
+AVOID_ERR_REMOVE_DIR(C:\ProgramData\DipTrace);
+REMOVE_DIR(C:\Users\djoliver\Documents);
+AVOID_ERR_REMOVE_DIR(C:\Users\djoliver\Documents);
+RunTimeDir_1=|||||||1||||1||1|<ProgramFilesDir>|||||||
+RunTimeDir_2=|0||0||0||1|0|0||1|0|1|<AllUsersAppDataDir>|0|0|0|0|
+RunTimeDir_3=|||||||1||||1||1|<ProgramFilesDir>|||||||
+RunTimeDir_4=|||||||1||||1||1|<ProgramFilesDir>|||||||
+RunTimeDir_5=|||||||1||||1||1|<ProgramFilesDir>|||||||
+RunTimeDir_6=|||||||1||||1||1|<ProgramFilesDir>|||||||
+RunTimeDir_7=|||||||1||||1||1|<ProgramFilesDir>|||||||
+RunTimeDir_8=|||||||1||||1||1|<ProgramFilesDir>|||||||
+REMOVE_REG_KEY(HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\UnInstall\Novarm DipTrace);
+
+SET_ADD_ASSOCIATION_ITEM(|DipBoard|DipTrace PCB|.dip||<Application Folder>\pcb.exe|<Application Folder>\pcb.exe|0|Create|Remove|);
+SET_ADD_ASSOCIATION_ITEM(|DipSchem|DipTrace Schematic|.dch||<Application Folder>\Schematic.exe|<Application Folder>\Schematic.exe|0|Create|Remove|);
+
+REMOVE_REG_KEY(HKEY_LOCAL_MACHINE\Software\Novarm\Novarm DipTrace);
+REMOVE_REG_KEY(HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\App Paths\Launcher.exe);
+TargetDir=C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design
+SharedDir=C:\ProgramData\DipTrace
+AuxiliaryDir=C:\Users\djoliver\Documents
+REMOVE_DIR(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\CompEdit.chm);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\CompEdit.exe);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Default.reg);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Launcher.exe);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Microsoft.VC80.CRT.manifest);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\msvcm80.dll);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\msvcp80.dll);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\msvcr80.dll);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\PattEdit.chm);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\PattEdit.exe);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\pcb.chm);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Pcb.exe);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\RouteLayer.dll);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\router.dll);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Schematic.chm);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Schematic.exe);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\tutorial.pdf);
+
+REMOVE_DIR(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\arctest.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\arctest_routed.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\arm.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Astable_Flip_Flop.dch);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Astable_Flip_Flop.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\BGA_autorouter.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\example_routed.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\example_unrouted.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Marking.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\outline.dxf);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\PCB_1.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\PCB_2.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\PCB_3.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\PCB_4.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\PCB_4arcs.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\PCB_5.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\PCB_6.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\PCB_round.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Quick Start.dch);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Quick_Start.dip);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Schematic (Symbols only).dch);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Schematic_1.dch);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Schematic_2.dch);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Schematic_3.dch);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Schematic_4.dch);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Schematic_5.dch);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Schematic_6.dch);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\tango_1.net);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\tango_1_imported.dip);
+
+REMOVE_DIR(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Spice);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Spice\AMP.dch);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Examples\Spice\Astable_Flip_Flop_Spice.dch);
+
+REMOVE_DIR(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_batteries.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_buzzers.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_cap_networks.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_connectors.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_connectors_sch.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_crystals.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_diodes.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_discrete.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_discrete_sch.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_discrete_smd.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_displays.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_displays_sch.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_General.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_microphones.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_opto_sch.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_ports.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_potentiometers.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_rectifiers.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_relays.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_res_networks.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_speakers.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_spice.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_switches.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\_transistors.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\actel.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\ad.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\agilent.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\allegro.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\altera.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\amd.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\amp.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\atmel.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Bat.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Bga.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Bqfp.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Bridge.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\burrbrown.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Cap.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Cap_smd.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Cfp.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Conn_Dsub.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Conn_Edge.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Conn_Headers.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Conn_IO.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Conn_Jacks.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Conn_RF&Coax.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Conn_Sockets.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Cqfp.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Crystal.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\cypress.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\dallas.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Dbs.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Dfn.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Diode.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Dip.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Dip_p.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Dip_smd.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Display.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\elantec.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\fairchild.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\gennum.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\harris.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\idt.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Ind_smd.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\infineon.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\inmos.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\intel.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\intersil.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\ir.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\lattice.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Lcc.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Lga.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\lt.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\maxim.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\microchip.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\micron.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\misc.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\mitel.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\mitsubishi.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\motorola.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\nec.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\newport.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\nsc.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\nte.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\onsemi.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\parallax.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Pga.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\philips.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\picaxe.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Plcc.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Pot.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Qfn.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Qfp.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\quicklogic.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\realtek.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Relay.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\renesas.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Res.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\rf_micro.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Sip.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Soj.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\sony.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Sop.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Sot.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Speak_Buzz_Mic.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\st_micro.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Switches.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\teccor.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\thomson.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\ti.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\TO.lib);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\toshiba.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\vishay.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\wd.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\winbond.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\xicor.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\xilinx.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\zetex.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\zilog.eli);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Lib\Zip.lib);
+
+REMOVE_DIR(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Utils);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Utils\Eagle_to_DipTrace_SCH.ulp);
+REMOVE_FILE(C:\Users\djoliver\Desktop\myQuad\Schematics and Circuit Board\Shield Design\Utils\Eagle_to_DipTrace_PCB.ulp);
+
+REMOVE_DIR(C:\ProgramData\DipTrace\Data);
+REMOVE_FILE(C:\ProgramData\DipTrace\Data\compedit.lng);
+REMOVE_FILE(C:\ProgramData\DipTrace\Data\diptrace.lng);
+REMOVE_FILE(C:\ProgramData\DipTrace\Data\pagestand.dat);
+REMOVE_FILE(C:\ProgramData\DipTrace\Data\pattedit.lng);
+REMOVE_FILE(C:\ProgramData\DipTrace\Data\schematic.lng);
+REMOVE_FILE(C:\ProgramData\DipTrace\Data\stamps.dat);
+
+REMOVE_DIR(C:\Users\djoliver\Documents\DipTrace);
+
+REMOVE_DIR(C:\Users\djoliver\Documents\DipTrace\Projects);
+
+REMOVE_DIR(C:\Users\djoliver\Documents\DipTrace\My Libraries);
+
+REMOVE_DIR(C:\Users\djoliver\Documents\DipTrace\Examples);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\arctest.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\arctest_routed.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\arm.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Astable_Flip_Flop.dch);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Astable_Flip_Flop.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\BGA_autorouter.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\example_routed.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\example_unrouted.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Marking.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\outline.dxf);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\PCB_1.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\PCB_2.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\PCB_3.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\PCB_4.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\PCB_4arcs.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\PCB_5.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\PCB_6.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\PCB_round.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Quick Start.dch);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Quick_Start.dip);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Schematic (Symbols only).dch);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Schematic_1.dch);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Schematic_2.dch);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Schematic_3.dch);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Schematic_4.dch);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Schematic_5.dch);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Schematic_6.dch);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\tango_1.net);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\tango_1_imported.dip);
+
+REMOVE_DIR(C:\Users\djoliver\Documents\DipTrace\Examples\Spice);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Spice\AMP.dch);
+REMOVE_FILE(C:\Users\djoliver\Documents\DipTrace\Examples\Spice\Astable_Flip_Flop_Spice.dch);
+
+REMOVE_FILE(C:\ProgramData\Microsoft\Windows\Start Menu\Programs\DipTrace\DipTrace Launcher.lnk);
+REMOVE_FOLDER(C:\ProgramData\Microsoft\Windows\Start Menu\Programs\DipTrace);
+AVOID_ERR_REMOVE_DIR(C:\ProgramData\Microsoft\Windows\Start Menu\Programs\DipTrace);
+REMOVE_FILE(C:\ProgramData\Microsoft\Windows\Start Menu\Programs\DipTrace\PCB Layout.lnk);
+REMOVE_FILE(C:\ProgramData\Microsoft\Windows\Start Menu\Programs\DipTrace\Schematic.lnk);
+REMOVE_FILE(C:\ProgramData\Microsoft\Windows\Start Menu\Programs\DipTrace\Component Editor.lnk);
+REMOVE_FILE(C:\ProgramData\Microsoft\Windows\Start Menu\Programs\DipTrace\Pattern Editor.lnk);
+REMOVE_FILE(C:\ProgramData\Microsoft\Windows\Start Menu\Programs\DipTrace\Tutorial.lnk);
+REMOVE_FILE(C:\ProgramData\Microsoft\Windows\Start Menu\Programs\DipTrace\Uninstall Novarm DipTrace.lnk);
+
+VARIABLE_VALUES=
+CASE_SENSITIVE=1
+WHOLE_WORD=0
