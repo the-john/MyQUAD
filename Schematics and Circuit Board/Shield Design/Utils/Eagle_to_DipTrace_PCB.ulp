@@ -1,0 +1,1835 @@
+#usage "Export DipTrace PCB ASCII format\n"
+       "Usage: RUN" 
+// Definitions: 
+real Pi=3.14159265;
+int nomercont=0;
+real angle=0, angleR=0;
+string Lay[], Lay1[];
+int nomlay=0;
+int net_number=0;
+string netsname[];
+int layername[];
+
+UL_BOARD B;
+UL_ELEMENT E;
+UL_PACKAGE P;
+UL_LAYER L;
+UL_WIRE W, W2;
+UL_PAD PAD;
+UL_CIRCLE CIRCLE;
+UL_RECTANGLE RECTANGLE;
+UL_AREA AREA;
+UL_SIGNAL S, S2;
+UL_TEXT TEXT;
+UL_CONTACTREF CONTREF;
+UL_VIA VIA;
+UL_HOLE HOLE;
+UL_POLYGON POLY;
+
+string zam(string s)
+  {
+  string s1="";
+  for (int i=0; i<strlen(s); i++)
+    {
+    if (s[i]==' ') 
+      s1+='!';
+        else
+      s1+=s[i];
+    }
+  return s1;
+  }
+
+real u2dpi(int x)
+  {
+  return u2mm(x)*3;
+  }
+
+//MAIN
+string file = dlgFileSave("", "", "*.asc");
+if (file)
+output(file)
+{ int i=0;
+  real x1, y1, r1, x2, y2;
+  int numshape=-1;
+  printf("(Source \"DipTrace-PCB\")\n");
+  printf("(Units \"mil\")\n");
+  printf("(Scale 136.834)\n");
+  printf("(Xpos 320)\n");
+  printf("(Ypos -260)\n");
+  printf("(Board\n");
+  board(B)
+    {
+    printf("  (Flag1 \"Y\")\n");
+    printf("  (Enabled \"Y\")\n");
+    printf("  (Xmin %f)\n",u2dpi(B.area.x1));
+    printf("  (Ymin %f)\n",u2dpi(-B.area.y1));
+    printf("  (Xmax %f)\n",u2dpi(B.area.x2));
+    printf("  (Ymax %f)\n",u2dpi(-B.area.y2));
+    printf("  (Points\n");
+    int xw1=0;
+    int yw1=0;
+    B.wires(W) 
+      {
+      if ((W.layer==LAYER_DIMENSION)&&(W.style==WIRE_STYLE_CONTINUOUS))
+        {
+        if (i==0) 
+          {
+          x1=u2dpi(W.x1);
+          y1=u2dpi(-W.y1);        
+          x2=u2dpi(W.x2);
+          y2=u2dpi(-W.y2);        
+          }
+        i++;
+        W.pieces(W2)
+          {
+          if (W2.arc)
+            {
+            if ((W2.x1==W2.arc.x1) && (W2.y1==W2.arc.y1))
+              {
+              printf("    (pt %f %f \"N\")\n",u2dpi(W2.arc.x1),u2dpi(-W2.arc.y1));
+              real rad=sqrt((u2dpi(W2.arc.xc)-u2dpi(W2.arc.x1))*(u2dpi(W2.arc.xc)-u2dpi(W2.arc.x1))+(u2dpi(W2.arc.yc)-u2dpi(W2.arc.y1))*(u2dpi(W2.arc.yc)-u2dpi(W2.arc.y1)));
+              real arctan1=W2.arc.angle1*Pi/180;
+              real arctan2=W2.arc.angle2*Pi/180;
+              printf("    (pt %f %f \"Y\")\n", u2dpi(W2.arc.xc)+rad*cos((arctan2-arctan1)/2+arctan1),u2dpi(-W2.arc.yc)-rad*sin((arctan2-arctan1)/2+arctan1));
+              printf("    (pt %f %f \"N\")\n",u2dpi(W2.arc.x2),u2dpi(-W2.arc.y2));
+              }
+                else
+              {
+              printf("    (pt %f %f \"N\")\n",u2dpi(W2.arc.x2),u2dpi(-W2.arc.y2));
+              real rad=sqrt((u2dpi(W2.arc.xc)-u2dpi(W2.arc.x1))*(u2dpi(W2.arc.xc)-u2dpi(W2.arc.x1))+(u2dpi(W2.arc.yc)-u2dpi(W2.arc.y1))*(u2dpi(W2.arc.yc)-u2dpi(W2.arc.y1)));
+              real arctan1=W2.arc.angle2*Pi/180;
+              real arctan2=W2.arc.angle1*Pi/180;
+              printf("    (pt %f %f \"Y\")\n", u2dpi(W2.arc.xc)+rad*cos((arctan2-arctan1)/2+arctan1),u2dpi(-W2.arc.yc)-rad*sin((arctan2-arctan1)/2+arctan1));
+              printf("    (pt %f %f \"N\")\n",u2dpi(W2.arc.x1),u2dpi(-W2.arc.y1));
+              }
+            }
+              else
+            {
+            if (i==0)
+              {
+              if ((x1=u2dpi(W2.x1))&&(y1=u2dpi(W2.y1)))
+                {
+                printf("    (pt %f %f \"N\")\n", x2, y2);
+                printf("    (pt %f %f \"N\")\n", x1, y1);
+                printf("    (pt %f %f \"N\")\n", u2dpi(W2.x2), u2dpi(-W2.y2));
+                real xxt=x2;
+                real yyt=y2;
+                x2=x1;
+                y2=y1;
+                x1=xxt;
+                y1=yyt;
+                xw1=W.x2;
+                yw1=W.y2;
+                }
+              if ((x1=u2dpi(W2.x2))&&(y1=u2dpi(W2.y2)))
+                {
+                printf("    (pt %f %f \"N\")\n", x2, y2);
+                printf("    (pt %f %f \"N\")\n", x1, y1);
+                printf("    (pt %f %f \"N\")\n", u2dpi(W2.x1), u2dpi(-W2.y1));
+                real xxt=x2;
+                real yyt=y2;
+                x2=x1;
+                y2=y1;
+                x1=xxt;
+                y1=yyt;
+                xw1=W.x1;
+                yw1=W.y1;
+                }
+              if ((x2=u2dpi(W2.x2))&&(y2=u2dpi(W2.y2)))
+                {
+                printf("    (pt %f %f \"N\")\n", x1, y1);
+                printf("    (pt %f %f \"N\")\n", x2, y2);
+                printf("    (pt %f %f \"N\")\n", u2dpi(W2.x1), u2dpi(-W2.y1));
+                real xxt=x2;
+                real yyt=y2;
+                x2=x1;
+                y2=y1;
+                x1=xxt;
+                y1=yyt;
+                xw1=W.x1;
+                yw1=W.y1;
+                }
+              if ((x2=u2dpi(W2.x1))&&(y2=u2dpi(W2.y1)))
+                {
+                printf("    (pt %f %f \"N\")\n", x1, y1);
+                printf("    (pt %f %f \"N\")\n", x2, y2);
+                printf("    (pt %f %f \"N\")\n", u2dpi(W2.x2), u2dpi(-W2.y2));
+                real xxt=x2;
+                real yyt=y2;
+                x2=x1;
+                y2=y1;
+                x1=xxt;
+                y1=yyt;
+                xw1=W.x2;
+                yw1=W.y2;
+                }
+              }
+                else
+              {
+              if ((xw1=W2.x1)&&(yw1=W2.y1))
+                {
+                printf("    (pt %f %f \"N\")\n", u2dpi(W2.x2), u2dpi(-W2.y2));                
+                xw1=W.x2;
+                yw1=W.y2;
+                }
+              if ((xw1=W2.x2)&&(yw1=W2.y2))
+                {
+                printf("    (pt %f %f \"N\")\n", u2dpi(W2.x1), u2dpi(-W2.y1));                
+                xw1=W.x2;
+                yw1=W.y2;
+                }
+
+              }
+
+            }
+          }
+        }
+      }
+    printf("    (pt %f %f \"N\")\n  )\n", x1, y1);
+    printf("  (Layers\n");
+    B.layers(L)
+      {
+      if ((L.number>=1)&&(L.number<16)&&(L.used==1))
+        {Lay[nomlay++]=L.name;}
+      }
+    B.layers(L)
+      {
+      if (L.number==16)
+        {Lay[nomlay++]=L.name;}
+      }
+    string lname;
+    for (int i=0; i<nomlay; i++)
+      {
+      B.layers(L) 
+        {
+        if (L.name==Lay[i])
+          {
+          lname=L.name;
+          if ((L.number>1)&&(L.number<16)&&(lname[0]=='$'))
+            {
+            string lname1="";
+            for (int j=0; j<strlen(lname); j++)
+              if (lname[j]!='$')
+                lname1+=lname[j];
+            printf("    (Name %s\n",lname1);
+            printf("      (Enabled \"Y\")\n");     
+            printf("      (Color %d)\n", palette(L.color));
+            printf("      (Number %d",i); printf(")\n");
+            printf("      (Type 1)\n");
+            printf("      (HoleType 0)\n");
+            net_number=-1;
+            int num=-1;
+            B.signals(S)
+              {
+              net_number++;
+              if (strlwr(S.name)==strlwr(lname1))
+                {
+                num=net_number;
+                break;
+                }
+              }
+            printf("      (NetNumber %d)\n",num);
+            printf("      (HoleSize 0)\n");
+            printf("      (Locked \"N\")\n");
+            printf("    )\n"); 
+            }
+              else
+            {
+            printf("    (Name %s\n",lname);
+            printf("      (Enabled \"Y\")\n");     
+            printf("      (Color %d)\n", palette(L.color));
+            printf("      (Number %d",i); printf(")\n");
+            printf("      (Type 0)\n");
+            printf("      (HoleType 0)\n");
+            printf("      (NetNumber -1)\n");
+            printf("      (HoleSize 0)\n");
+            printf("      (Locked \"N\")\n");
+            printf("    )\n"); 
+            }
+          layername[i]=L.number;
+          break;
+          }
+        }
+      }
+    printf("  )\n");
+    printf("  (Components\n");
+    int nomer=0;
+    B.elements(E) 
+      {
+      printf("    (Component \"%s", E.package.name);
+      printf("\" %s\n", E.name);
+      printf("      (Enabled \"Y\")\n");
+      printf("      (Value \"%s\")\n", E.value);
+      printf("      (BaseName \"\")\n");
+      printf("      (X %f)\n", u2dpi((E.package.area.x2-E.package.area.x1)/2+E.package.area.x1));
+      printf("      (Y %f)\n", u2dpi(-(E.package.area.y2-E.package.area.y1)/2-E.package.area.y1));
+      x1=u2dpi((E.package.area.x2-E.package.area.x1)/2+E.package.area.x1);
+      y1=u2dpi(-(E.package.area.y2-E.package.area.y1)/2-E.package.area.y1);
+      printf("      (VariableParameter1 \"N\")\n");
+      printf("      (VariableParameter2 \"N\")\n");
+      printf("      (VariableParameter3 \"N\")\n");
+      printf("      (VariableParameter4 \"N\")\n");
+      printf("      (VariableParameter5 \"N\")\n");
+      printf("      (LockProperties \"N\")\n");
+      printf("      (Spacing1 0)\n");
+      printf("      (Spacing2 0)\n");
+      printf("      (Spacing3 0)\n");
+      printf("      (Width 1)\n");
+      printf("      (Height 1)\n");
+
+      real PadWidth=0;
+      real PadHeight=0;
+      real PadHole=0;      
+      E.package.contacts(C) 
+        {
+        if (C.pad)
+          {
+          PadWidth=u2dpi((C.pad.diameter[LAYER_TOP])*(1+C.pad.elongation/100));
+          PadHeight=u2dpi(C.pad.diameter[LAYER_TOP]);
+          PadHole=u2dpi(C.pad.drill);
+          }
+        }
+      printf("      (PadWidth %f)\n",PadWidth);
+      printf("      (PadHeight %f)\n",PadHeight);
+      printf("      (PadHole %f)\n",PadHole);
+      printf("      (Selected \"N\")\n");
+      printf("      (Type 0)\n");
+      printf("      (Number1 0)\n");
+      printf("      (Number2 0)\n");
+      printf("      (Orientation 0)\n");
+      printf("      (Group -1)\n");
+      printf("      (Number %d)\n",nomer++);
+      printf("      (PadShape 0)\n");
+      printf("      (ShowText 0)\n");
+      printf("      (TextAlign 0)\n");
+      printf("      (ShowText2 0)\n");
+      printf("      (TextAlign2 0)\n");
+      printf("      (TextPosX 0)\n");
+      printf("      (TextPosY 0)\n");
+      printf("      (TextPosX2 0)\n");
+      printf("      (TextPosY2 0)\n");
+
+      int bool1=0;
+      if (E.mirror!=0)
+        bool1=1;
+/*         
+      E.package.circles(CIRCLE)
+        {
+        if (CIRCLE.layer == LAYER_BPLACE || CIRCLE.layer == LAYER_BDOCU)
+          {
+          bool1=1;
+          break;
+          }
+        }       
+      E.package.rectangles(RECTANGLE)
+        {
+        if (RECTANGLE.layer == LAYER_BPLACE || RECTANGLE.layer == LAYER_BDOCU)
+          {
+          bool1=1;
+          break;
+          }
+        }
+      E.package.wires(W)
+        {
+        if (W.layer == LAYER_BPLACE || W.layer == LAYER_BDOCU)
+          {
+          bool1=1;
+          break;
+          }
+        }
+      E.package.polygons(POLY)
+        {
+        if (POLY.layer == LAYER_BPLACE || POLY.layer == LAYER_BDOCU)
+          {
+          bool1=1;
+          break;
+          }
+        } 
+*/
+      if (bool1==0)
+        {printf("      (BottomSide \"N\")\n");}
+          else
+        {printf("      (BottomSide \"Y\")\n");}
+      printf("      (ConnectedLayer 0)\n");
+      printf("      (Flipped \"N\")\n");
+      printf("      (HiddenId 0)\n");
+      printf("      (OriginX 0)\n");
+      printf("      (OriginY 0)\n");
+      printf("      (ShowOrigin \"N\")\n");
+      printf("      (HorizontalFlip \"N\")\n");
+      printf("      (UserFields\n      )\n");
+      printf("      (FieldIndex1 -1)\n");
+      printf("      (FieldIndex2 -1)\n");
+      printf("      (Locked \"N\")\n");
+      printf("      (PadPoints\n      )\n");
+      printf("      (Angle %f)\n", E.angle);
+      printf("      (GsType 0)\n");
+      angle=E.angle;
+      //PADS+
+      printf("      (Pads\n");
+      nomercont=0;
+      printf("        (Pad %d \"\" \"\" 0 0\n", nomercont++); 
+      printf("        )\n");
+      E.package.contacts(C) 
+        {
+        if (C.pad)
+          {
+          printf("        (Pad %d \"%s\" \"\" %f %f\n", nomercont,  C.name, (-x1+u2dpi(C.x))/**cos(angle)*/, (-y1+u2dpi(-C.y))/**sin(angle)*/); 
+          printf("          (Number %d)\n", nomercont++);
+          printf("          (Inverted \"N\")\n");
+          printf("          (Locked \"N\")\n");
+          printf("          (DisableTopMask \"N\")\n");
+          printf("          (DisableBottomMask \"N\")\n");
+          printf("          (DisableTopPaste \"N\")\n");
+          printf("          (DisableBottomPaste \"N\")\n");
+          printf("          (CustomSwell -1000)\n");
+          printf("          (CustomShrink -1000)\n");          
+          int net_number=-1;
+          int i=0;
+          B.signals(S)
+            {
+            if (S.name==C.pad.signal)
+              {net_number=i; break;}
+            i++;
+            }
+          printf("          (NetNumber %d)\n", net_number);
+          if (C.pad.angle==0 || C.pad.angle==180)
+            {
+            printf("          (PadWidth %f)\n",u2dpi(C.pad.diameter[LAYER_TOP])*(1+C.pad.elongation/100));
+            printf("          (PadHeight %f)\n",u2dpi(C.pad.diameter[LAYER_TOP]));
+            }
+              else
+            {
+            printf("          (PadWidth %f)\n",u2dpi(C.pad.diameter[LAYER_TOP]));
+            printf("          (PadHeight %f)\n",u2dpi(C.pad.diameter[LAYER_TOP])*(1+C.pad.elongation/100));
+            }
+          printf("          (PadHole %f)\n",u2dpi(C.pad.drill));
+          printf("          (SurfacePad \"N\")\n");
+          printf("          (Standard \"N\")\n");
+          if (C.pad.shape[LAYER_TOP]==PAD_SHAPE_SQUARE) 
+            {
+            if (C.pad.angle==0 || C.pad.angle==180 || C.pad.angle==270 || C.pad.angle==360)
+              {
+              printf("          (PadShape 2)\n");
+              printf("          (PadPoints\n          )\n");
+              }
+                else
+              {
+              printf("          (PadShape 3)\n");
+              printf("          (PadPoints\n");
+              real ang=C.pad.angle;
+              real ugol=Pi/4;
+              real diam=u2dpi(C.pad.diameter[LAYER_TOP]);
+              real xp=0;
+              real yp=0;
+              real angle1=0;
+              real rad=diam/2;
+              for (int i=0; i<4; i++)
+                {
+                xp=((diam/2)*cos(ugol+(Pi/2)*i));
+                yp=((diam/2)*sin(ugol+(Pi/2)*i));
+ 
+                angle1=atan((yp)/(xp));
+                if (xp<0) {angle1+=3.14;}
+                rad=sqrt(xp*xp+yp*yp);
+                xp=rad*cos(angle1-ang*Pi/180);
+                yp=rad*sin(angle1-ang*Pi/180);
+
+                printf("            (pt %f %f)\n", xp, yp);
+                }
+              printf("          )\n");
+              }
+            }
+          if (C.pad.shape[LAYER_TOP]==PAD_SHAPE_ROUND) 
+            {
+            printf("          (PadShape 1)\n");
+            printf("          (PadPoints\n          )\n");
+            }
+          if (C.pad.shape[LAYER_TOP]==PAD_SHAPE_OCTAGON) 
+            {
+            printf("          (PadShape 3)\n");
+            printf("          (PadPoints\n");
+
+            real ang=C.pad.angle;
+            real ugol=Pi/8;
+            real diam=u2dpi(C.pad.diameter[LAYER_TOP]);
+            real xp=0;
+            real yp=0;
+            real angle1=0;
+            real rad=diam/2;
+            for (int i=0; i<8; i++)
+              {
+              xp=((diam/2)*cos(ugol+(Pi/4)*i));
+              yp=((diam/2)*sin(ugol+(Pi/4)*i));
+              angle1=atan((yp)/(xp));
+              if (xp<0) {angle1+=Pi;}
+              rad=sqrt(xp*xp+yp*yp);
+              xp=rad*cos(angle1-ang*Pi/180);
+              yp=rad*sin(angle1-ang*Pi/180);
+              printf("            (pt %f %f)\n", xp, yp);
+              }
+            printf("          )\n");
+            }
+          if (C.pad.shape[LAYER_TOP]==PAD_SHAPE_LONG) 
+            {
+            printf("          (PadShape 3)\n");
+            printf("          (PadPoints\n");
+
+            real ang=C.pad.angle;
+            real ugol=Pi/8;
+            real diam=u2dpi(C.pad.diameter[LAYER_TOP]);
+            real elong=diam*(C.pad.elongation/100);
+            real xp=0;
+            real yp=0;
+            real angle1=0;
+            real rad=0;
+            for (int i=0; i<20; i++)
+              {
+              if (i<10)
+                {
+                xp=diam/2*cos(Pi/9*i-90.05*Pi/180/*+ang*Pi/180*/)+diam/2;
+                yp=diam/2*sin(Pi/9*i-90.05*Pi/180/*+ang*Pi/180*/);
+                }
+                else
+                {
+                xp=diam/2*cos(Pi/9*(i-1)-90.05*Pi/180/*+ang*Pi/180*/)-diam/2;
+                yp=diam/2*sin(Pi/9*(i-1)-90.05*Pi/180/*+ang*Pi/180*/);
+                }
+
+              angle1=atan((yp)/(xp));
+              if (xp<0) {angle1+=Pi;}
+              rad=sqrt(xp*xp+yp*yp);
+              xp=rad*cos(angle1-ang*Pi/180);
+              yp=rad*sin(angle1-ang*Pi/180);
+
+              printf("            (pt %f %f)\n", xp, yp);
+              }
+/*
+            real ang=C.pad.angle;
+            real ugol=Pi/8;
+            real diam=u2dpi(C.pad.diameter[LAYER_TOP]);
+            real elong=diam*(C.pad.elongation/100);
+            real xp=0;
+            real yp=0; 
+            real angle1=0;
+            real rad=0;
+            for (int i=0; i<8; i++)
+              {
+              xp=((diam/2)*cos(ugol+(Pi/4)*i));
+              yp=((diam/2)*sin(ugol+(Pi/4)*i));
+              if (xp>0)
+                {xp+=elong/2;}
+                  else
+                {xp-=elong/2;}
+
+              angle1=atan((yp)/(xp));
+              if (xp<0) {angle1+=Pi;}
+              rad=sqrt(xp*xp+yp*yp);
+              xp=rad*cos(angle1-ang*Pi/180);
+              yp=rad*sin(angle1-ang*Pi/180);
+
+              printf("            (pt %f %f)\n", xp, yp);
+              }
+*/
+            printf("          )\n");
+            }
+          if (C.pad.shape[LAYER_TOP]==PAD_SHAPE_OFFSET) 
+            {
+            printf("          (PadShape 3)\n");
+            printf("          (PadPoints\n");
+            real ang=C.pad.angle;
+            real ugol=Pi/8;
+            real diam=u2dpi(C.pad.diameter[LAYER_TOP]);
+            real elong=diam*(C.pad.elongation/100);
+            real xp=0;
+            real yp=0;
+            real angle1=0;
+            real rad=0;
+            for (int i=0; i<8; i++)
+              {
+              xp=((diam/2)*cos(ugol+(Pi/4)*i));
+              yp=((diam/2)*sin(ugol+(Pi/4)*i));
+              if (xp>0)
+                {xp+=elong/2+diam/2;}
+                  else
+                {xp-=elong/2-diam/2;}
+              angle1=atan((yp)/(xp));
+              if (xp<0) {angle1+=Pi;}
+              rad=sqrt(xp*xp+yp*yp);
+              xp=rad*cos(angle1-ang*Pi/180);
+              yp=rad*sin(angle1-ang*Pi/180);
+              printf("            (pt %f %f)\n", xp, yp);
+              }
+            printf("          )\n"); 
+            }
+          printf("          (ConnectToPour \"N\")\n"); 
+          printf("          (HideLayer\n          )\n"); 
+          printf("          (CustomSpokes\n          )\n"); 
+          printf("        )\n");
+          }
+        if (C.smd)
+          {
+          printf("        (Pad %d \"%s\" \"\" %f %f\n", nomercont,  C.name, (-x1+u2dpi(C.x)), (-y1+u2dpi(-C.y))); 
+          printf("          (Number %d)\n", nomercont++);
+          printf("          (Inverted \"N\")\n");
+          printf("          (Locked \"N\")\n");
+          if (((C.smd.layer==LAYER_TOP)||(C.smd.layer==LAYER_TSTOP)||(C.smd.layer==LAYER_TCREAM))/*&&(bool1==0)*/)
+            {
+            if (bool1==0)
+              printf("          (Sided \"N\")\n");
+                else
+              printf("          (Sided \"Y\")\n");
+            }
+              else
+            {
+            if (bool1==1)
+              printf("          (Sided \"N\")\n");
+                else
+              printf("          (Sided \"Y\")\n");
+            }
+          printf("          (DisableTopMask \"N\")\n");
+          printf("          (DisableBottomMask \"N\")\n");
+          printf("          (DisableTopPaste \"N\")\n");
+          printf("          (DisableBottomPaste \"N\")\n");
+          printf("          (CustomSwell -1000)\n");
+          printf("          (CustomShrink -1000)\n");          
+          int net_number=-1;
+          int i=0;
+          B.signals(S)
+            {
+            if (S.name==C.smd.signal)
+              {net_number=i; break;}
+            i++;
+            }
+          printf("          (NetNumber %d)\n", net_number);
+          if (C.smd.angle==0 || C.smd.angle==180)
+            {
+            printf("          (PadWidth %f)\n",u2dpi(C.smd.dx)); 
+            printf("          (PadHeight %f)\n",u2dpi(C.smd.dy)); 
+            }
+              else
+            {
+            printf("          (PadWidth %f)\n",u2dpi(C.smd.dx)); 
+            printf("          (PadHeight %f)\n",u2dpi(C.smd.dy)); 
+            }
+          printf("          (PadHole 0)\n"); 
+          printf("          (SurfacePad \"Y\")\n");
+          printf("          (Standard \"N\")\n");
+          //SMD PAD+
+          printf("          (PadShape 3)\n");
+          real roundness=C.smd.roundness;
+          real anglerot=C.smd.angle;
+          real anglesmd=10*Pi/180;
+          real drx=u2dpi(C.smd.dx);
+          real dry=u2dpi(C.smd.dy);
+          real rad=(dry/2)*roundness/100;
+          if (drx<=dry)
+            rad=(drx/2)*roundness/100;
+              else
+            rad=(dry/2)*roundness/100;
+          real cx=0;
+          real cy=0;
+          real pointx=0, pointy=0;
+          real anglerad=0;
+          real rad2=0;
+          printf("          (PadPoints\n");
+          cx=drx/2-rad;
+          cy=-dry/2+rad;
+          real oldpx=-10000;
+          real oldpy=-10000;
+          for (i=0; i<10; i++)
+            {
+            pointx=cx-rad*cos(Pi+anglesmd*i);
+            pointy=cy+rad*sin(Pi+anglesmd*i);
+            anglerad=atan(pointy/pointx);
+            if (pointx<0)
+              {anglerad+=Pi;}
+            rad2=sqrt(pointx*pointx+pointy*pointy);
+            pointx=rad2*cos(anglerad-anglerot*Pi/180);
+            pointy=rad2*sin(anglerad-anglerot*Pi/180);
+            if ((pointx!=oldpx)||(pointy!=oldpy))
+              printf("            (pt %f %f)\n", pointx, pointy);
+            oldpx=pointx;
+            oldpy=pointy;
+            }
+          cx=-drx/2+rad;
+          cy=-dry/2+rad;
+          for (i=0; i<10; i++)
+            {
+            pointx=cx+rad*cos(Pi/2+anglesmd*i);
+            pointy=cy-rad*sin(Pi/2+anglesmd*i);
+            anglerad=atan(pointy/pointx);
+            if (pointx<0)
+              {anglerad+=Pi;}
+            rad2=sqrt(pointx*pointx+pointy*pointy);
+            pointx=rad2*cos(anglerad-anglerot*Pi/180);
+            pointy=rad2*sin(anglerad-anglerot*Pi/180);
+            if ((pointx!=oldpx)||(pointy!=oldpy))
+              printf("            (pt %f %f)\n", pointx, pointy);
+            oldpx=pointx;
+            oldpy=pointy;
+            }
+          cx=-drx/2+rad;
+          cy=dry/2-rad;
+          for (i=0; i<10; i++)
+            {
+            pointx=cx-rad*cos(anglesmd*i);
+            pointy=cy+rad*sin(anglesmd*i);
+            anglerad=atan(pointy/pointx);
+            if (pointx<0)
+              {anglerad+=Pi;}
+            rad2=sqrt(pointx*pointx+pointy*pointy);
+            pointx=rad2*cos(anglerad-anglerot*Pi/180);
+            pointy=rad2*sin(anglerad-anglerot*Pi/180);
+            if ((pointx!=oldpx)||(pointy!=oldpy))
+              printf("            (pt %f %f)\n", pointx, pointy);
+            oldpx=pointx;
+            oldpy=pointy;
+            }
+          cx=drx/2-rad;
+          cy=dry/2-rad;
+          for (i=0; i<10; i++)
+            {
+            pointx=cx+rad*cos(-Pi/2+anglesmd*i);
+            pointy=cy-rad*sin(-Pi/2+anglesmd*i);
+            anglerad=atan(pointy/pointx);
+            if (pointx<0)
+              {anglerad+=Pi;}
+            rad2=sqrt(pointx*pointx+pointy*pointy);
+            pointx=rad2*cos(anglerad-anglerot*Pi/180);
+            pointy=rad2*sin(anglerad-anglerot*Pi/180);
+            if ((pointx!=oldpx)||(pointy!=oldpy))
+              printf("            (pt %f %f)\n", pointx, pointy);
+            oldpx=pointx;
+            oldpy=pointy;
+            }
+          printf("          )\n");
+          //SMD PAD-
+          printf("          (ConnectToPour \"N\")\n"); 
+          printf("          (HideLayer\n          )\n"); 
+          printf("          (BlindLayer\n          )\n"); 
+          printf("          (CustomSpokes\n          )\n"); 
+          printf("        )\n");
+          }
+        }
+      printf("        (Pad %d \"\" \"\" 0 0\n", nomercont++); 
+      printf("        )\n");
+      printf("      )\n");
+      //PADS-
+      //SHAPES+
+      printf("      (Shapes\n");
+      printf("        (Shape 0 \"N\" 0 0 0 0 0 0 0)\n");
+      E.package.circles(CIRCLE)
+        {
+        if (CIRCLE.layer == LAYER_TPLACE || CIRCLE.layer == LAYER_TDOCU || CIRCLE.layer == LAYER_BPLACE || CIRCLE.layer == LAYER_BDOCU ||
+            CIRCLE.layer == LAYER_TOP || CIRCLE.layer == LAYER_BOTTOM || CIRCLE.layer == LAYER_TKEEPOUT || CIRCLE.layer == LAYER_BKEEPOUT ||
+            CIRCLE.layer == LAYER_TCREAM || CIRCLE.layer == LAYER_BCREAM || CIRCLE.layer == LAYER_TSTOP || CIRCLE.layer == LAYER_BSTOP ||
+            CIRCLE.layer == LAYER_MILLING)
+          {
+          int sstay=0;
+          if (bool1==0)
+            {
+            if (CIRCLE.layer == LAYER_TPLACE)
+              {sstay=0;}
+            if (CIRCLE.layer == LAYER_BPLACE)
+              {sstay=7;}
+            if (CIRCLE.layer == LAYER_TDOCU)
+              {sstay=1;}
+            if (CIRCLE.layer == LAYER_BDOCU)
+              {sstay=6;}
+            if (CIRCLE.layer == LAYER_TOP)
+              {sstay=8;}
+            if (CIRCLE.layer == LAYER_BOTTOM)
+              {sstay=11;}
+            if (CIRCLE.layer == LAYER_TKEEPOUT)
+              {sstay=9;}
+            if (CIRCLE.layer == LAYER_BKEEPOUT)
+              {sstay=10;}
+            if (CIRCLE.layer == LAYER_TCREAM)
+              {sstay=3;}
+            if (CIRCLE.layer == LAYER_BCREAM)
+              {sstay=4;}
+            if (CIRCLE.layer == LAYER_TSTOP)
+              {sstay=2;}
+            if (CIRCLE.layer == LAYER_BSTOP)
+              {sstay=5;}
+            if (CIRCLE.layer == LAYER_MILLING)
+              {sstay=12;}
+            }
+              else
+            {
+            if (CIRCLE.layer == LAYER_TPLACE)
+              {sstay=7;}
+            if (CIRCLE.layer == LAYER_BPLACE)
+              {sstay=0;}
+            if (CIRCLE.layer == LAYER_TDOCU)
+              {sstay=6;}
+            if (CIRCLE.layer == LAYER_BDOCU)
+              {sstay=1;}
+            if (CIRCLE.layer == LAYER_TOP)
+              {sstay=11;}
+            if (CIRCLE.layer == LAYER_BOTTOM)
+              {sstay=8;}
+            if (CIRCLE.layer == LAYER_TKEEPOUT)
+              {sstay=10;}
+            if (CIRCLE.layer == LAYER_BKEEPOUT)
+              {sstay=9;}
+            if (CIRCLE.layer == LAYER_TCREAM)
+              {sstay=4;}
+            if (CIRCLE.layer == LAYER_BCREAM)
+              {sstay=3;}
+            if (CIRCLE.layer == LAYER_TSTOP)
+              {sstay=5;}
+            if (CIRCLE.layer == LAYER_BSTOP)
+              {sstay=2;}
+            if (CIRCLE.layer == LAYER_MILLING)
+              {sstay=12;}
+            }
+
+          printf("        (Shape 3 \"N\" %d %f %f %f %f 0 0 \"\" \"\" \"N\" 0 0 0 0 %f)\n", sstay, -x1+u2dpi(CIRCLE.x-CIRCLE.radius), -y1+u2dpi(-CIRCLE.y-CIRCLE.radius), -x1+u2dpi(CIRCLE.x+CIRCLE.radius), -y1+u2dpi(-CIRCLE.y+CIRCLE.radius), u2dpi(CIRCLE.width));
+          }
+        }       
+      E.package.rectangles(RECTANGLE)
+        {
+        if (RECTANGLE.layer == LAYER_TPLACE || RECTANGLE.layer == LAYER_TDOCU || RECTANGLE.layer == LAYER_BPLACE || RECTANGLE.layer == LAYER_BDOCU ||
+            RECTANGLE.layer == LAYER_TOP || RECTANGLE.layer == LAYER_BOTTOM || RECTANGLE.layer == LAYER_TKEEPOUT || RECTANGLE.layer == LAYER_BKEEPOUT ||
+            RECTANGLE.layer == LAYER_TCREAM || RECTANGLE.layer == LAYER_BCREAM ||RECTANGLE.layer == LAYER_TSTOP ||RECTANGLE.layer == LAYER_BSTOP ||
+            RECTANGLE.layer == LAYER_MILLING)
+          {
+          angleR=RECTANGLE.angle;
+
+          int sstay=0;
+          if (bool1==0)
+            {
+            if (RECTANGLE.layer == LAYER_TPLACE)
+              {sstay=0;}
+            if (RECTANGLE.layer == LAYER_BPLACE)
+              {sstay=7;}
+            if (RECTANGLE.layer == LAYER_TDOCU)
+              {sstay=1;}
+            if (RECTANGLE.layer == LAYER_BDOCU)
+              {sstay=6;}
+            if (RECTANGLE.layer == LAYER_TOP)
+              {sstay=8;}
+            if (RECTANGLE.layer == LAYER_BOTTOM)
+              {sstay=11;}
+            if (RECTANGLE.layer == LAYER_TKEEPOUT)
+              {sstay=9;}
+            if (RECTANGLE.layer == LAYER_BKEEPOUT)
+              {sstay=10;}
+            if (RECTANGLE.layer == LAYER_TCREAM)
+              {sstay=3;}
+            if (RECTANGLE.layer == LAYER_BCREAM)
+              {sstay=4;}
+            if (RECTANGLE.layer == LAYER_TSTOP)
+              {sstay=2;}
+            if (RECTANGLE.layer == LAYER_BSTOP)
+              {sstay=5;}
+            if (RECTANGLE.layer == LAYER_MILLING)
+              {sstay=12;}
+            }
+              else
+            {
+            if (RECTANGLE.layer == LAYER_TPLACE)
+              {sstay=7;}
+            if (RECTANGLE.layer == LAYER_BPLACE)
+              {sstay=0;}
+            if (RECTANGLE.layer == LAYER_TDOCU)
+              {sstay=6;}
+            if (RECTANGLE.layer == LAYER_BDOCU)
+              {sstay=1;}
+            if (RECTANGLE.layer == LAYER_TOP)
+              {sstay=11;}
+            if (RECTANGLE.layer == LAYER_BOTTOM)
+              {sstay=8;}
+            if (RECTANGLE.layer == LAYER_TKEEPOUT)
+              {sstay=10;}
+            if (RECTANGLE.layer == LAYER_BKEEPOUT)
+              {sstay=9;}
+            if (RECTANGLE.layer == LAYER_TCREAM)
+              {sstay=4;}
+            if (RECTANGLE.layer == LAYER_BCREAM)
+              {sstay=3;}
+            if (RECTANGLE.layer == LAYER_TSTOP)
+              {sstay=5;}
+            if (RECTANGLE.layer == LAYER_BSTOP)
+              {sstay=2;}
+            if (RECTANGLE.layer == LAYER_MILLING)
+              {sstay=12;}
+            }
+          if (angleR==0 || angleR==90 || angleR==180 || angleR==270)
+            {
+            real centrex=(u2dpi(RECTANGLE.x2)-u2dpi(RECTANGLE.x1))/2+u2dpi(RECTANGLE.x1);
+            real centrey=(u2dpi(-RECTANGLE.y2)-u2dpi(-RECTANGLE.y1))/2+u2dpi(-RECTANGLE.y1);
+            real radius=sqrt((centrex-u2dpi(RECTANGLE.x1))*(centrex-u2dpi(RECTANGLE.x1))+(centrey-u2dpi(-RECTANGLE.y1))*(centrey-u2dpi(-RECTANGLE.y1)));
+            real atan1=atan((centrey-u2dpi(-RECTANGLE.y1))/(centrex-u2dpi(RECTANGLE.x1)));
+            real atan2=atan((centrey-u2dpi(-RECTANGLE.y2))/(centrex-u2dpi(RECTANGLE.x2)));
+            if ((centrex-u2dpi(RECTANGLE.x1))<-0.0001) 
+              {atan1+=3.14; }
+            if ((centrex-u2dpi(RECTANGLE.x2))<-0.0001) 
+              {atan2+=3.14;}
+  
+            printf("        (Shape 4 \"N\" %d %f %f %f %f 0 0 \"\" \"\" \"N\" 0 0 0 0 -1)\n", sstay, -x1+centrex+radius*cos(atan1-angleR*3.14/180), -y1+centrey+radius*sin(atan1-angleR*3.14/180), -x1+centrex+radius*cos(atan2-angleR*3.14/180), -y1+centrey+radius*sin(atan2-angleR*3.14/180));
+            }
+              else
+            {
+            real centrex=(u2dpi(RECTANGLE.x2)-u2dpi(RECTANGLE.x1))/2+u2dpi(RECTANGLE.x1);
+            real centrey=(u2dpi(-RECTANGLE.y2)-u2dpi(-RECTANGLE.y1))/2+u2dpi(-RECTANGLE.y1);
+            real radius=sqrt((centrex-u2dpi(RECTANGLE.x1))*(centrex-u2dpi(RECTANGLE.x1))+(centrey-u2dpi(-RECTANGLE.y1))*(centrey-u2dpi(-RECTANGLE.y1)));
+            real atan1=atan((centrey-u2dpi(-RECTANGLE.y1))/(centrex-u2dpi(RECTANGLE.x1)));
+            real atan2=atan((centrey-u2dpi(-RECTANGLE.y2))/(centrex-u2dpi(RECTANGLE.x2)));
+            real atan3=atan(-(centrey-u2dpi(-RECTANGLE.y1))/(centrex-u2dpi(RECTANGLE.x1)));
+            real atan4=atan(-(centrey-u2dpi(-RECTANGLE.y2))/(centrex-u2dpi(RECTANGLE.x2)));
+            if ((centrex-u2dpi(RECTANGLE.x1))<-0.0001) 
+              {atan1+=3.14; }
+            if ((centrex-u2dpi(RECTANGLE.x2))<-0.0001) 
+              {atan2+=3.14;}
+            if ((centrey-u2dpi(-RECTANGLE.y1))<-0.0001) 
+              {atan3+=3.14; }
+            if ((centrey-u2dpi(-RECTANGLE.y2))<-0.0001) 
+              {atan4+=3.14;}
+            printf("        (Shape 1 \"N\" %d %f %f %f %f 0 0 \"\" \"\" \"N\" 0 0 0 0 -1)\n", sstay, -x1+centrex+radius*cos(atan1-angleR*3.14/180), -y1+centrey+radius*sin(atan1-angleR*3.14/180),-x1+centrex+radius*cos(atan3-angleR*3.14/180), -y1+centrey+radius*sin(atan3-angleR*3.14/180));
+            printf("        (Shape 1 \"N\" %d %f %f %f %f 0 0 \"\" \"\" \"N\" 0 0 0 0 -1)\n", sstay, -x1+centrex+radius*cos(atan2-angleR*3.14/180), -y1+centrey+radius*sin(atan2-angleR*3.14/180),-x1+centrex+radius*cos(atan4-angleR*3.14/180), -y1+centrey+radius*sin(atan4-angleR*3.14/180));
+            printf("        (Shape 1 \"N\" %d %f %f %f %f 0 0 \"\" \"\" \"N\" 0 0 0 0 -1)\n", sstay, -x1+centrex+radius*cos(atan1-angleR*3.14/180), -y1+centrey+radius*sin(atan1-angleR*3.14/180),-x1+centrex+radius*cos(atan4-angleR*3.14/180), -y1+centrey+radius*sin(atan4-angleR*3.14/180));
+            printf("        (Shape 1 \"N\" %d %f %f %f %f 0 0 \"\" \"\" \"N\" 0 0 0 0 -1)\n", sstay, -x1+centrex+radius*cos(atan2-angleR*3.14/180), -y1+centrey+radius*sin(atan2-angleR*3.14/180),-x1+centrex+radius*cos(atan3-angleR*3.14/180), -y1+centrey+radius*sin(atan3-angleR*3.14/180));
+            }
+
+          }
+        }       
+      E.package.wires(W)
+        {
+        W.pieces(W2)        
+          {
+          if (W2.layer == LAYER_TPLACE || W2.layer == LAYER_TDOCU || W2.layer == LAYER_BPLACE || W2.layer == LAYER_BDOCU ||
+            W2.layer == LAYER_TOP || W2.layer == LAYER_BOTTOM || W2.layer == LAYER_TKEEPOUT || W2.layer == LAYER_BKEEPOUT ||
+            W2.layer == LAYER_TCREAM || W2.layer == LAYER_BCREAM || W2.layer == LAYER_TSTOP || W2.layer == LAYER_BSTOP ||
+            W2.layer == LAYER_MILLING)
+            { 
+            int sstay=0;
+            if (bool1==0)
+              {
+              if (W2.layer == LAYER_TPLACE)
+                {sstay=0;}
+              if (W2.layer == LAYER_BPLACE)
+                {sstay=7;}
+              if (W2.layer == LAYER_TDOCU)
+                {sstay=1;}
+              if (W2.layer == LAYER_BDOCU)
+                {sstay=6;}
+              if (W2.layer == LAYER_TOP)
+                {sstay=8;}
+              if (W2.layer == LAYER_BOTTOM)
+                {sstay=11;}
+              if (W2.layer == LAYER_TKEEPOUT)
+                {sstay=9;}
+              if (W2.layer == LAYER_BKEEPOUT)
+                {sstay=10;}
+              if (W2.layer == LAYER_TCREAM) 
+                {sstay=3;}
+              if (W2.layer == LAYER_BCREAM)
+                {sstay=4;}
+              if (W2.layer == LAYER_TSTOP)
+                {sstay=2;} 
+              if (W2.layer == LAYER_BSTOP)
+                {sstay=5;} 
+              if (W2.layer == LAYER_MILLING)
+                {sstay=12;}
+              }
+                else
+              {
+              if (W2.layer == LAYER_TPLACE)
+                {sstay=7;}
+              if (W2.layer == LAYER_BPLACE)
+                {sstay=0;}
+              if (W2.layer == LAYER_TDOCU)
+                {sstay=6;}
+              if (W2.layer == LAYER_BDOCU)
+                {sstay=1;}
+              if (W2.layer == LAYER_TOP)
+                {sstay=11;}
+              if (W2.layer == LAYER_BOTTOM)
+                {sstay=8;}
+              if (W2.layer == LAYER_TKEEPOUT)
+                {sstay=10;}
+              if (W2.layer == LAYER_BKEEPOUT)
+                {sstay=9;}
+              if (W2.layer == LAYER_TCREAM) 
+                {sstay=4;}
+              if (W2.layer == LAYER_BCREAM)
+                {sstay=3;}
+              if (W2.layer == LAYER_TSTOP)
+                {sstay=5;} 
+              if (W2.layer == LAYER_BSTOP)
+                {sstay=2;} 
+              if (W2.layer == LAYER_MILLING)
+                {sstay=12;}
+              }
+
+            if (W2.arc)
+              {
+              real x3=(u2dpi(W2.arc.xc)+u2dpi(W2.arc.radius)*cos((W2.arc.angle1*3.14/180+W2.arc.angle2*3.14/180)/2));
+              real y3=(u2dpi(W2.arc.yc)+u2dpi(W2.arc.radius)*sin((W2.arc.angle1*3.14/180+W2.arc.angle2*3.14/180)/2));
+              printf("        (Shape 6 \"N\" %d %f %f %f %f %f %f \"\" \"\" \"N\" 0 0 0 0 %f)\n", sstay, -x1+u2dpi(W2.x1), -y1+u2dpi(-W2.y1), -x1+x3, -y1-y3, -x1+u2dpi(W2.x2), -y1+u2dpi(-W2.y2), u2dpi(W.width));
+              }
+                else
+              {
+              printf("        (Shape 1 \"N\" %d %f %f %f %f 0 0 \"\" \"\" \"N\" 0 0 0 0 %f)\n", sstay, -x1+u2dpi(W2.x1), -y1+u2dpi(-W2.y1), -x1+u2dpi(W2.x2), -y1+u2dpi(-W2.y2), u2dpi(W.width));
+              }
+            }
+          }
+        }
+      E.package.texts(TEXT)
+        {
+        //no in PCB
+        }
+      printf("        (Shape 0 \"N\" 0 0 0 0 0 0 0)\n");
+      printf("      )\n");
+      //SHAPES-
+      //HOLES+
+      printf("      (Holes\n");
+      printf("        (Hole \"N\" \"N\" 0 0 0 0)\n"); 
+      E.package.holes(HOLE)
+        {
+        printf("        (Hole \"Y\" \"N\" %f %f %f %f)\n", -x1+u2dpi(HOLE.x), -y1+u2dpi(-HOLE.y), u2dpi(HOLE.diameter[LAYER_TSTOP]), u2dpi(HOLE.drill)); 
+        }
+      printf("        (Hole \"N\" \"N\" 0 0 0 0)\n"); 
+      printf("      )\n");
+      //HOLES-
+      //DIMENSIONS+
+      printf("      (Dimensions\n");
+
+      printf("      )\n");
+      //DIMENSIONS-
+      printf("    )\n");
+      }
+   //HOLES
+  int nomhole=0;
+  B.holes(HOLE)
+    {
+    printf("    (Component \"Hole\" Hole%d\n",nomhole++);
+    printf("      (Enabled \"Y\")\n");
+    printf("      (Value \"\")\n");
+    printf("      (BaseName \"\")\n");
+    printf("      (X %f)\n", u2dpi(HOLE.x));
+    printf("      (Y %f)\n", u2dpi(-HOLE.y));
+    printf("      (VariableParameter1 \"N\")\n");
+    printf("      (VariableParameter2 \"N\")\n");
+    printf("      (VariableParameter3 \"N\")\n");
+    printf("      (VariableParameter4 \"N\")\n");
+    printf("      (VariableParameter5 \"N\")\n");
+    printf("      (Spacing1 0)\n");
+    printf("      (Spacing2 0)\n");
+    printf("      (Spacing3 0)\n");
+    printf("      (Width %f)\n", u2dpi(HOLE.diameter[LAYER_TSTOP]));
+    printf("      (Height %f)\n", u2dpi(HOLE.diameter[LAYER_TSTOP]));
+    printf("      (PadWidth %f)\n", u2dpi(HOLE.diameter[LAYER_TSTOP]));
+    printf("      (PadHeight %f)\n", u2dpi(HOLE.diameter[LAYER_TSTOP]));
+    printf("      (PadHole %f)\n", u2dpi(HOLE.drill));
+    printf("      (Selected \"N\")\n");
+    printf("      (Type 15)\n");
+    printf("      (Number1 0)\n");
+    printf("      (Number2 0)\n");
+    printf("      (Orientation 0)\n");
+    printf("      (Group -1)\n");
+    printf("      (Number %d)\n",nomer++);
+    printf("      (PadShape 0)\n");
+    printf("      (SurfacePad \"N\")\n");
+    printf("      (ShowText 1)\n");
+    printf("      (TextAlign 0)\n");
+    printf("      (ShowText2 1)\n");
+    printf("      (TextAlign2 0)\n");
+    printf("      (TextPosX 0)\n");
+    printf("      (TextPosY 0)\n");
+    printf("      (TextPosX2 0)\n");
+    printf("      (TextPosY2 0)\n");
+    printf("      (BottomSide \"N\")\n");
+    printf("      (ConnectedLayer 0)\n");
+    printf("      (Flipped \"N\")\n");
+    printf("      (HiddenId -1)\n");
+    printf("      (OriginX 0)\n");
+    printf("      (OriginY 0)\n");
+    printf("      (ShowOrigin \"N\")\n");
+    printf("      (HorizontalFlip \"N\")\n");
+    printf("      (UserFields\n      )\n");
+    printf("      (FieldIndex1 0)\n");
+    printf("      (FieldIndex2 0)\n");
+    printf("      (Angle 0)\n");
+    printf("      (Locked \"N\")\n");
+    printf("      (PadPoints\n      )\n");
+    printf("      (Pads\n");
+    printf("        (Pad %d \"\" \"\" 0 0\n", 0); 
+    printf("        )\n");
+    printf("        (Pad %d \"\" \"\" 0 0\n", 1); 
+    printf("        )\n");
+    printf("      )\n");
+    printf("      (Holes\n");
+    printf("        (Hole \"N\" \"N\" 0 0 0 0)\n"); 
+    printf("        (Hole \"Y\" \"N\" 0 0 %f %f)\n",u2dpi(HOLE.diameter[LAYER_TSTOP]), u2dpi(HOLE.drill)); 
+    printf("        (Hole \"N\" \"N\" 0 0 0 0)\n"); 
+    printf("      )\n");
+    printf("    )\n");
+    }
+//VIA
+  int nomvia=0;
+  int nomnet=0;
+  B.signals(S)
+    {
+    S.vias(VIA)
+      {
+      printf("    (Component \"Static!Via\" StaticVia%d\n",nomvia++);
+      printf("      (Enabled \"Y\")\n");
+      printf("      (Value \"\")\n");
+      printf("      (BaseName \"\")\n");
+      printf("      (X %f)\n", u2dpi(VIA.x));
+      printf("      (Y %f)\n", u2dpi(-VIA.y));
+      printf("      (VariableParameter1 \"N\")\n");
+      printf("      (VariableParameter2 \"N\")\n");
+      printf("      (VariableParameter3 \"N\")\n");
+      printf("      (VariableParameter4 \"N\")\n");
+      printf("      (VariableParameter5 \"N\")\n");
+      printf("      (Spacing1 0)\n");
+      printf("      (Spacing2 0)\n");
+      printf("      (Spacing3 0)\n");
+      printf("      (Width %f)\n", u2dpi(VIA.diameter[LAYER_TOP]));
+      printf("      (Height %f)\n", u2dpi(VIA.diameter[LAYER_TOP]));
+      printf("      (PadWidth %f)\n", u2dpi(VIA.diameter[LAYER_TOP]));
+      printf("      (PadHeight %f)\n", u2dpi(VIA.diameter[LAYER_TOP]));
+      printf("      (PadHole %f)\n", u2dpi(VIA.drill));
+      printf("      (Selected \"N\")\n");
+      printf("      (Type 16)\n");
+      printf("      (Number1 0)\n");
+      printf("      (Number2 0)\n");
+      printf("      (Orientation 0)\n");
+      printf("      (Group -1)\n"); 
+      printf("      (Number %d)\n",nomer++);
+      printf("      (PadShape 0)\n");
+      printf("      (SurfacePad \"N\")\n");
+      printf("      (ShowText 1)\n");
+      printf("      (TextAlign 0)\n");
+      printf("      (ShowText2 1)\n");
+      printf("      (TextAlign2 0)\n");
+      printf("      (TextPosX 0)\n");
+      printf("      (TextPosY 0)\n");
+      printf("      (TextPosX2 0)\n");
+      printf("      (TextPosY2 0)\n");
+      printf("      (BottomSide \"N\")\n");
+      printf("      (ConnectedLayer 0)\n");
+      printf("      (Flipped \"N\")\n");
+      printf("      (HiddenId -1)\n");
+      printf("      (OriginX 0)\n");
+      printf("      (OriginY 0)\n");
+      printf("      (ShowOrigin \"N\")\n");
+      printf("      (HorizontalFlip \"N\")\n");
+      printf("      (UserFields\n      )\n");
+      printf("      (FieldIndex1 0)\n");
+      printf("      (FieldIndex2 0)\n");
+      printf("      (Angle 0)\n");
+      printf("      (Locked \"N\")\n");
+      printf("      (PadPoints\n      )\n");
+      printf("      (Pads\n");
+      printf("        (Pad %d \"\" \"\" 0 0\n", 0); 
+      printf("        )\n");
+      printf("        (Pad %d \"1\" \"\" 0 0\n", 1); 
+      printf("          (Number 1)\n");
+      printf("          (Inverted \"N\")\n");
+      printf("          (Locked \"N\")\n");
+      printf("          (DisableTopMask \"N\")\n");
+      printf("          (DisableBottomMask \"N\")\n");
+      printf("          (DisableTopPaste \"N\")\n");
+      printf("          (DisableBottomPaste \"N\")\n");
+      printf("          (CustomSwell -1000)\n");
+      printf("          (CustomShrink -1000)\n");
+      printf("          (NetNumber %d)\n",nomnet);
+      printf("          (PadWidth %f)\n", u2dpi(VIA.diameter[LAYER_TOP]));
+      printf("          (PadHeight %f)\n", u2dpi(VIA.diameter[LAYER_TOP]));
+      printf("          (PadHole %f)\n", u2dpi(VIA.drill));
+      printf("          (SurfacePad \"N\")\n");
+      printf("          (PadShape 0)\n");
+      printf("          (Standard \"N\")\n");
+      printf("          (PadPoints\n          )\n");
+      printf("          (ConnectToPour \"N\")\n");
+      printf("          (HideLayer\n          )\n");
+      printf("          (BlindLayer\n          )\n");
+      printf("          (CustomSpokes\n          )\n");
+      printf("        )\n");      
+      printf("        (Pad %d \"\" \"\" 0 0\n", 2); 
+      printf("        )\n");
+      printf("      )\n");
+      printf("    )\n");
+      }
+    nomnet++;
+    }   
+  printf("  )\n");
+  printf("  (Connections\n");
+/*
+  int nom=0;
+  int nomcomp=0;
+  int nomcont=0;
+  int nomcomp1=0;
+  int nomcont1=0;
+  B.signals(S)
+    {
+    S.wires(W)
+      {
+      nom=0;
+      if (W.layer==LAYER_UNROUTED)
+        {
+        for (int i=0; i<=1; i++)
+          {
+          nomcomp=0;
+          B.elements(E) 
+            {
+            nomcont=1;
+            E.package.contacts(C)
+              {
+              if ((C.x==W.x1)&&(C.y==W.y1)&&(nom==0))
+                {
+                nomcomp1=nomcomp;
+                nomcont1=nomcont;
+                }
+              if ((C.x==W.x2)&&(C.y==W.y2)&&(nom==1))
+                {                
+                printf("    (Connection \"Y\" %f %f %f %f %d %d %d %d)\n", u2dpi(W.x1), u2dpi(-W.y1), u2dpi(W.x2), u2dpi(-W.y2), nomcomp1, nomcomp, nomcont1, nomcont);                
+                }
+              nomcont++;
+              }
+            nomcomp++;
+            }
+          nom=i+1;
+          }
+        }
+      }
+    }
+*/
+  printf("  )\n");
+  net_number=0;
+  printf("  (Nets\n");
+  B.signals(S)
+    {
+    printf("    (Net \"%s\"\n", S.name);
+    printf("      (Enabled \"Y\")\n");
+    printf("      (Selected \"N\")\n");
+    printf("      (ActivePoint 0)\n");
+    printf("      (ActiveLine 0)\n");
+    printf("      (Group -1)\n");
+    netsname[net_number]=S.name;
+    printf("      (Number %d)\n",net_number++);
+    printf("      (RouteMode 0)\n");
+    printf("      (Width -1)\n");
+    printf("      (Clearance -1)\n");
+    printf("      (ViaSize -1)\n");
+    printf("      (ViaRing -1)\n");
+    printf("      (ThroughVia \"Y\")\n");
+    printf("      (HideConnections \"N\")\n");
+    printf("      (Locked \"N\")\n");
+    printf("      (Component\n");
+/*
+    int nomercomp=0;
+    int nomercont=0;
+    S.contactrefs(CONTREF)
+      {
+      nomercomp=0;
+      B.elements(E) 
+        {
+        if (E.name==CONTREF.element.name)
+          {
+          printf("        (pt %d",nomercomp);
+          nomercont=1;
+          E.package.contacts(C)
+            {
+            if (C.name==CONTREF.contact.name)
+              {
+              printf(" %d)\n",nomercont);
+              break;
+              }
+            nomercont++;
+            }
+          break;
+          }
+        nomercomp++;
+        }
+      }
+*/
+    printf("      )\n");
+    printf("      (Lines\n      )\n");
+    printf("    )\n");
+    }
+  printf("  )\n");
+  printf("  (Shapes\n");
+/*
+  B.texts(TEXT)
+    {
+    printf("    (Shape\n");
+    printf("      (Enabled \"Y\")\n"); 
+    printf("      (Selected \"N\")\n"); 
+    printf("      (Orientation 0)\n"); 
+    printf("      (AllLayers \"N\")\n"); 
+    printf("      (Type 0)\n"); 
+    printf("      (Layer 0)\n"); 
+    printf("      (ShapeType 6)\n"); 
+//    printf("      (FontSize 30)\n"); 
+    printf("      (FontSize %d)\n", TEXT.size/203); 
+    printf("      (BitmapIndex 0)\n"); 
+    printf("      (Group -1)\n"); 
+    printf("      (Color 8421504)\n"); 
+    printf("      (BrushColor 12632256)\n"); 
+    printf("      (PenWidth 0.6)\n"); 
+    printf("      (Points\n"); 
+    printf("        (pt %f %f)\n", u2dpi(TEXT.x), u2dpi(-TEXT.y));
+    printf("        (pt %f %f)\n", u2dpi(TEXT.x)+300, u2dpi(-TEXT.y)-10);
+    printf("      )\n");
+    printf("      (Name \"%s\")\n", zam(TEXT.value)); 
+    printf("      (FontName \"Arial\")\n"); 
+    printf("      (Locked \"N\")\n"); 
+    printf("    )\n");
+    }
+*/
+    B.circles(CIRCLE)
+      {
+      if ((CIRCLE.layer>=1 && CIRCLE.layer<=16) || CIRCLE.layer>99)
+        {
+        printf("    (Shape\n");
+        printf("      (Enabled \"Y\")\n"); 
+        printf("      (Selected \"N\")\n"); 
+        printf("      (Orientation 0)\n"); 
+        printf("      (AllLayers \"N\")\n"); 
+        printf("      (Type 0)\n"); 
+        for (int i=0; i<nomlay; i++)
+          if (layername[i]==CIRCLE.layer)
+            {
+            printf("      (Layer %d)\n",i);
+            break;
+            }
+        printf("      (ShapeType 4)\n"); 
+        printf("      (FontSize 11)\n"); 
+        printf("      (BitmapIndex 0)\n"); 
+        printf("      (Group -1)\n"); 
+        printf("      (Color 8421504)\n"); 
+        printf("      (BrushColor 12632256)\n"); 
+        printf("      (PenWidth %f)\n", u2dpi(CIRCLE.width)); 
+        printf("      (Points\n"); 
+        printf("        (pt %f %f)\n", u2dpi(CIRCLE.x-CIRCLE.radius), u2dpi(-CIRCLE.y-CIRCLE.radius));
+        printf("        (pt %f %f)\n", u2dpi(CIRCLE.x+CIRCLE.radius), u2dpi(-CIRCLE.y+CIRCLE.radius));
+        printf("      )\n");
+        printf("      (Name \"Shape\")\n"); 
+        printf("      (FontName \"Arial\")\n"); 
+        printf("      (Locked \"N\")\n"); 
+        printf("      (NetNumber -1)\n");
+        printf("      (VectorFont \"Y\")\n"); 
+        printf("      (FontWidth -2)\n");
+        printf("      (FontScale 1)\n");
+        printf("      (OldNumber %d)\n", ++numshape);
+        printf("    )\n");
+        }
+      }       
+    B.rectangles(RECTANGLE)
+      {
+      if ((RECTANGLE.layer>=1 && RECTANGLE.layer<=16) || RECTANGLE.layer>99)
+        {
+        angleR=RECTANGLE.angle;
+        if (angleR==0 || angleR==90 || angleR==180 || angleR==270)
+          {
+          printf("    (Shape\n");
+          printf("      (Enabled \"Y\")\n"); 
+          printf("      (Selected \"N\")\n"); 
+          printf("      (Orientation 0)\n"); 
+          printf("      (AllLayers \"N\")\n"); 
+          printf("      (Type 0)\n"); 
+          for (int i=0; i<nomlay; i++)
+            if (layername[i]==RECTANGLE.layer)
+              {
+              printf("      (Layer %d)\n",i);
+              break;
+              }
+          printf("      (ShapeType 3)\n"); 
+          printf("      (FontSize 11)\n"); 
+          printf("      (BitmapIndex 0)\n"); 
+          printf("      (Group -1)\n"); 
+          printf("      (Color 8421504)\n");
+          printf("      (BrushColor 12632256)\n"); 
+          printf("      (PenWidth 1)\n"); 
+          real centrex=(u2dpi(RECTANGLE.x2)-u2dpi(RECTANGLE.x1))/2+u2dpi(RECTANGLE.x1);
+          real centrey=(u2dpi(-RECTANGLE.y2)-u2dpi(-RECTANGLE.y1))/2+u2dpi(-RECTANGLE.y1);
+          real radius=sqrt((centrex-u2dpi(RECTANGLE.x1))*(centrex-u2dpi(RECTANGLE.x1))+(centrey-u2dpi(-RECTANGLE.y1))*(centrey-u2dpi(-RECTANGLE.y1)));
+          real atan1=atan((centrey-u2dpi(-RECTANGLE.y1))/(centrex-u2dpi(RECTANGLE.x1)));
+          real atan2=atan((centrey-u2dpi(-RECTANGLE.y2))/(centrex-u2dpi(RECTANGLE.x2)));
+          if ((centrex-u2dpi(RECTANGLE.x1))<-0.0001) 
+            {atan1+=3.14; }
+          if ((centrex-u2dpi(RECTANGLE.x2))<-0.0001) 
+            {atan2+=3.14;}
+          printf("      (Points\n"); 
+          printf("        (pt %f %f)\n", centrex+radius*cos(atan1-angleR*3.14/180), centrey+radius*sin(atan1-angleR*3.14/180));
+          printf("        (pt %f %f)\n", centrex+radius*cos(atan2-angleR*3.14/180), centrey+radius*sin(atan2-angleR*3.14/180));
+          printf("      )\n");
+          printf("      (Name \"Shape\")\n"); 
+          printf("      (FontName \"Arial\")\n"); 
+          printf("      (Locked \"N\")\n"); 
+          printf("      (NetNumber -1)\n");
+          printf("      (VectorFont \"Y\")\n"); 
+          printf("      (FontWidth -2)\n");
+          printf("      (FontScale 1)\n");
+          printf("      (OldNumber %d)\n", ++numshape);
+          printf("    )\n");
+          }
+            else
+          {
+          printf("    (Shape\n");
+          printf("      (Enabled \"Y\")\n"); 
+          printf("      (Selected \"N\")\n"); 
+          printf("      (Orientation 0)\n"); 
+          printf("      (AllLayers \"N\")\n"); 
+          printf("      (Type 0)\n"); 
+          for (int i=0; i<nomlay; i++)
+            if (layername[i]==RECTANGLE.layer)
+              {
+              printf("      (Layer %d)\n",i);
+              break;
+              }
+          printf("      (ShapeType 9)\n"); 
+          printf("      (FontSize 11)\n"); 
+          printf("      (BitmapIndex 0)\n"); 
+          printf("      (Group -1)\n"); 
+          printf("      (Color 8421504)\n"); 
+          printf("      (BrushColor 12632256)\n"); 
+          printf("      (PenWidth 1)\n"); 
+          real centrex=(u2dpi(RECTANGLE.x2)-u2dpi(RECTANGLE.x1))/2+u2dpi(RECTANGLE.x1);
+          real centrey=(u2dpi(-RECTANGLE.y2)-u2dpi(-RECTANGLE.y1))/2+u2dpi(-RECTANGLE.y1);
+          real radius=sqrt((centrex-u2dpi(RECTANGLE.x1))*(centrex-u2dpi(RECTANGLE.x1))+(centrey-u2dpi(-RECTANGLE.y1))*(centrey-u2dpi(-RECTANGLE.y1)));
+          real atan1=atan((centrey-u2dpi(-RECTANGLE.y1))/(centrex-u2dpi(RECTANGLE.x1)));
+          real atan2=atan((centrey-u2dpi(-RECTANGLE.y2))/(centrex-u2dpi(RECTANGLE.x2)));
+          real atan3=atan(-(centrey-u2dpi(-RECTANGLE.y1))/(centrex-u2dpi(RECTANGLE.x1)));
+          real atan4=atan(-(centrey-u2dpi(-RECTANGLE.y2))/(centrex-u2dpi(RECTANGLE.x2)));
+          if ((centrex-u2dpi(RECTANGLE.x1))<-0.0001) 
+            {atan1+=3.14; }
+          if ((centrex-u2dpi(RECTANGLE.x2))<-0.0001) 
+            {atan2+=3.14;}
+          if ((centrey-u2dpi(-RECTANGLE.y1))<-0.0001) 
+            {atan3+=3.14; }
+          if ((centrey-u2dpi(-RECTANGLE.y2))<-0.0001) 
+            {atan4+=3.14;}
+          printf("      (Points\n"); 
+          printf("        (pt %f %f)\n", centrex+radius*cos(atan1-angleR*3.14/180), centrey+radius*sin(atan1-angleR*3.14/180));
+          printf("        (pt %f %f)\n", centrex+radius*cos(atan3-angleR*3.14/180), centrey+radius*sin(atan3-angleR*3.14/180));
+          printf("        (pt %f %f)\n", centrex+radius*cos(atan2-angleR*3.14/180), centrey+radius*sin(atan2-angleR*3.14/180));
+          printf("        (pt %f %f)\n", centrex+radius*cos(atan4-angleR*3.14/180), centrey+radius*sin(atan4-angleR*3.14/180));
+          printf("        (pt %f %f)\n", centrex+radius*cos(atan1-angleR*3.14/180), centrey+radius*sin(atan1-angleR*3.14/180));
+          printf("      )\n");
+          printf("      (Name \"Shape\")\n"); 
+          printf("      (FontName \"Arial\")\n"); 
+          printf("      (Locked \"N\")\n"); 
+          printf("      (NetNumber -1)\n");
+          printf("      (VectorFont \"Y\")\n"); 
+          printf("      (FontWidth -2)\n");
+          printf("      (FontScale 1)\n");
+          printf("      (OldNumber %d)\n", ++numshape);
+          printf("    )\n");
+          }
+        }
+      }           
+    B.polygons(POLY)
+      {
+      printf("    (Shape\n");
+      printf("      (Enabled \"Y\")\n"); 
+      printf("      (Selected \"N\")\n"); 
+      printf("      (Orientation 0)\n"); 
+      printf("      (AllLayers \"N\")\n"); 
+      printf("      (Type 0)\n"); 
+      for (int i=0; i<nomlay; i++)
+        if (layername[i]==POLY.layer)
+          {
+          printf("      (Layer %d)\n",i);
+          break;
+          }
+      printf("      (ShapeType 8)\n"); 
+      printf("      (FontSize 11)\n"); 
+      printf("      (BitmapIndex 0)\n"); 
+      printf("      (Group -1)\n"); 
+      printf("      (Color 8421504)\n"); 
+      printf("      (BrushColor 12632256)\n"); 
+      printf("      (PenWidth %f)\n", u2dpi(POLY.width)); 
+      printf("      (Points\n"); 
+      POLY.contours(W2)        
+        {
+        if (W2.layer==1 || W2.layer==16 ||W2.layer>99)
+          {
+          if (W2.arc)
+            {
+            if ((W2.x1==W2.arc.x1) && (W2.y1==W2.arc.y1))
+              {
+              printf("    (pt %f %f \"N\")\n",u2dpi(W2.arc.x1),u2dpi(-W2.arc.y1));
+              real rad=sqrt((u2dpi(W2.arc.xc)-u2dpi(W2.arc.x1))*(u2dpi(W2.arc.xc)-u2dpi(W2.arc.x1))+(u2dpi(W2.arc.yc)-u2dpi(W2.arc.y1))*(u2dpi(W2.arc.yc)-u2dpi(W2.arc.y1)));
+              real arctan1=W2.arc.angle1*Pi/180;
+              real arctan2=W2.arc.angle2*Pi/180;
+              real aat=10*Pi/180;
+              for (int i=0; i<round(abs(arctan1-arctan2)/aat); i++)
+                {
+                printf("    (pt %f %f \"Y\")\n", u2dpi(W2.arc.xc)+rad*cos(arctan1+i*aat),u2dpi(-W2.arc.yc)-rad*sin(arctan1+i*aat));
+                }
+              printf("    (pt %f %f \"N\")\n",u2dpi(W2.arc.x2),u2dpi(-W2.arc.y2));
+              }
+                else
+              {
+              printf("    (pt %f %f \"N\")\n",u2dpi(W2.arc.x2),u2dpi(-W2.arc.y2));
+              real rad=sqrt((u2dpi(W2.arc.xc)-u2dpi(W2.arc.x1))*(u2dpi(W2.arc.xc)-u2dpi(W2.arc.x1))+(u2dpi(W2.arc.yc)-u2dpi(W2.arc.y1))*(u2dpi(W2.arc.yc)-u2dpi(W2.arc.y1)));
+              real arctan1=W2.arc.angle2*Pi/180;
+              real arctan2=W2.arc.angle1*Pi/180;
+              real aat=10*Pi/180;
+              for (int i=0; i<round(abs(arctan1-arctan2)/aat); i++)
+                {
+                printf("    (pt %f %f \"Y\")\n", u2dpi(W2.arc.xc)+rad*cos(arctan1-i*aat),u2dpi(-W2.arc.yc)-rad*sin(arctan1-i*aat));
+                }
+              printf("    (pt %f %f \"N\")\n",u2dpi(W2.arc.x1),u2dpi(-W2.arc.y1));
+              }
+            }
+              else
+            {
+            printf("        (pt %f %f)\n", u2dpi(W2.x1), u2dpi(-W2.y1));
+            printf("        (pt %f %f)\n", u2dpi(W2.x2), u2dpi(-W2.y2));
+            }
+          }
+        }
+      printf("      )\n");
+      printf("      (Name \"Shape\")\n"); 
+      printf("      (FontName \"Arial\")\n"); 
+      printf("      (Locked \"N\")\n"); 
+      printf("      (NetNumber -1)\n");
+      printf("      (VectorFont \"Y\")\n"); 
+      printf("      (FontWidth -2)\n");
+      printf("      (FontScale 1)\n");
+      printf("      (OldNumber %d)\n", ++numshape);
+      printf("    )\n");
+      }
+    B.polygons(W)
+      {
+      W.fillings(W2)        
+        {
+        if ((W2.layer>=1 && W2.layer<=16) ||W2.layer>99)
+          {
+          printf("    (Shape\n");
+          printf("      (Enabled \"Y\")\n"); 
+          printf("      (Selected \"N\")\n"); 
+          printf("      (Orientation 0)\n"); 
+          printf("      (AllLayers \"N\")\n"); 
+          if (W2.arc)
+            {
+            printf("      (Type 0)\n"); 
+            for (int i=0; i<nomlay; i++)
+              if (layername[i]==W2.layer)
+                {
+                printf("      (Layer %d)\n",i);
+                break;
+                }
+            printf("      (ShapeType 1)\n"); 
+            printf("      (FontSize 11)\n"); 
+            printf("      (BitmapIndex 0)\n"); 
+            printf("      (Group -1)\n"); 
+            printf("      (Color 8421504)\n"); 
+            printf("      (BrushColor 12632256)\n"); 
+            printf("      (PenWidth %f)\n", u2dpi(W2.width)); 
+            real x3=(u2dpi(W2.arc.xc)+u2dpi(W2.arc.radius)*cos((W2.arc.angle1*3.14/180+W2.arc.angle2*3.14/180)/2));
+            real y3=(u2dpi(W2.arc.yc)+u2dpi(W2.arc.radius)*sin((W2.arc.angle1*3.14/180+W2.arc.angle2*3.14/180)/2));
+            printf("      (Points\n"); 
+            printf("        (pt %f %f)\n", u2dpi(W2.x1), u2dpi(-W2.y1));
+            printf("        (pt %f %f)\n", x3, -y3);
+            printf("        (pt %f %f)\n", u2dpi(W2.x2), u2dpi(-W2.y2));
+            printf("      )\n");
+            printf("      (Name \"Shape\")\n"); 
+            printf("      (FontName \"Arial\")\n"); 
+            printf("      (Locked \"N\")\n"); 
+            printf("      (NetNumber -1)\n");
+            printf("      (VectorFont \"Y\")\n"); 
+            printf("      (FontWidth -2)\n");
+            printf("      (FontScale 1)\n");
+            printf("      (OldNumber %d)\n", ++numshape);
+            printf("    )\n");
+            }
+              else
+            {
+            printf("      (Type 0)\n"); 
+            for (int i=0; i<nomlay; i++)
+              if (layername[i]==W2.layer)
+                {
+                printf("      (Layer %d)\n",i);
+                break;
+                }
+            printf("      (ShapeType 0)\n"); 
+            printf("      (FontSize 11)\n"); 
+            printf("      (BitmapIndex 0)\n"); 
+            printf("      (Group -1)\n"); 
+            printf("      (Color 8421504)\n"); 
+            printf("      (BrushColor 12632256)\n"); 
+            printf("      (PenWidth %f)\n", u2dpi(W2.width)); 
+            printf("      (Points\n"); 
+            printf("        (pt %f %f)\n", u2dpi(W2.x1), u2dpi(-W2.y1));
+            printf("        (pt %f %f)\n", u2dpi(W2.x2), u2dpi(-W2.y2));
+            printf("      )\n");
+            printf("      (Name \"Shape\")\n"); 
+            printf("      (FontName \"Arial\")\n"); 
+            printf("      (Locked \"N\")\n"); 
+            printf("      (NetNumber -1)\n");
+            printf("      (VectorFont \"Y\")\n"); 
+            printf("      (FontWidth -2)\n");
+            printf("      (FontScale 1)\n");
+            printf("      (OldNumber %d)\n", ++numshape);
+            printf("    )\n");
+            }
+          }
+        }
+      }
+    B.wires(W)
+      {
+      W.pieces(W2)        
+        {
+        if ((W2.layer>=1 && W2.layer<=16) ||W2.layer>99)
+          {
+          printf("    (Shape\n");
+          printf("      (Enabled \"Y\")\n"); 
+          printf("      (Selected \"N\")\n"); 
+          printf("      (Orientation 0)\n"); 
+          printf("      (AllLayers \"N\")\n"); 
+          if (W2.arc)
+            {
+            printf("      (Type 0)\n"); 
+            for (int i=0; i<nomlay; i++)
+              if (layername[i]==W2.layer)
+                {
+                printf("      (Layer %d)\n",i);
+                break;
+                }
+            printf("      (ShapeType 1)\n"); 
+            printf("      (FontSize 11)\n"); 
+            printf("      (BitmapIndex 0)\n"); 
+            printf("      (Group -1)\n"); 
+            printf("      (Color 8421504)\n"); 
+            printf("      (BrushColor 12632256)\n"); 
+            printf("      (PenWidth %f)\n", u2dpi(W.width)); 
+            real x3=(u2dpi(W2.arc.xc)+u2dpi(W2.arc.radius)*cos((W2.arc.angle1*3.14/180+W2.arc.angle2*3.14/180)/2));
+            real y3=(u2dpi(W2.arc.yc)+u2dpi(W2.arc.radius)*sin((W2.arc.angle1*3.14/180+W2.arc.angle2*3.14/180)/2));
+            printf("      (Points\n"); 
+            printf("        (pt %f %f)\n", u2dpi(W2.x1), u2dpi(-W2.y1));
+            printf("        (pt %f %f)\n", x3, -y3);
+            printf("        (pt %f %f)\n", u2dpi(W2.x2), u2dpi(-W2.y2));
+            printf("      )\n");
+            printf("      (Name \"Shape\")\n"); 
+            printf("      (FontName \"Arial\")\n"); 
+            printf("      (Locked \"N\")\n"); 
+            printf("      (NetNumber -1)\n");
+            printf("      (VectorFont \"Y\")\n"); 
+            printf("      (FontWidth -2)\n");
+            printf("      (FontScale 1)\n");
+            printf("      (OldNumber %d)\n", ++numshape);
+            printf("    )\n");
+            }
+              else
+            {
+            printf("      (Type 0)\n"); 
+            for (int i=0; i<nomlay; i++)
+              if (layername[i]==W2.layer)
+                {
+                printf("      (Layer %d)\n",i);
+                break;
+                }
+            printf("      (ShapeType 0)\n"); 
+            printf("      (FontSize 11)\n"); 
+            printf("      (BitmapIndex 0)\n"); 
+            printf("      (Group -1)\n"); 
+            printf("      (Color 8421504)\n"); 
+            printf("      (BrushColor 12632256)\n"); 
+            printf("      (PenWidth %f)\n", u2dpi(W.width)); 
+            printf("      (Points\n"); 
+            printf("        (pt %f %f)\n", u2dpi(W2.x1), u2dpi(-W2.y1));
+            printf("        (pt %f %f)\n", u2dpi(W2.x2), u2dpi(-W2.y2));
+            printf("      )\n");
+            printf("      (Name \"Shape\")\n"); 
+            printf("      (FontName \"Arial\")\n"); 
+            printf("      (Locked \"N\")\n"); 
+            printf("      (NetNumber -1)\n");
+            printf("      (VectorFont \"Y\")\n"); 
+            printf("      (FontWidth -2)\n");
+            printf("      (FontScale 1)\n");
+            printf("      (OldNumber %d)\n", ++numshape);
+            printf("    )\n");
+            }
+          }
+        }
+      }
+  //nets
+  int nomnets=0;
+  B.signals(S2)
+    {
+    S2.wires(W) 
+      {
+      if (W.layer!=LAYER_UNROUTED)
+        {   
+        printf("    (Shape\n");
+        printf("      (Enabled \"Y\")\n"); 
+        printf("      (Selected \"N\")\n"); 
+        printf("      (Orientation 0)\n"); 
+        printf("      (AllLayers \"N\")\n"); 
+        printf("      (Type 3)\n"); 
+        for (int i=0; i<nomlay; i++)
+          if (layername[i]==W.layer)
+            {
+            printf("      (Layer %d)\n",i);
+            break;
+            }
+        if (W.arc)
+          {
+          printf("      (ShapeType 1)\n"); 
+          printf("      (FontSize 11)\n"); 
+          printf("      (BitmapIndex 0)\n"); 
+          printf("      (Group %d)\n", nomnets); 
+          printf("      (Color 8421504)\n"); 
+          printf("      (BrushColor 12632256)\n"); 
+          printf("      (PenWidth %f)\n", u2dpi(W.width)); 
+
+          real x3=(u2dpi(W.arc.xc)+u2dpi(W.arc.radius)*cos((W.arc.angle1*3.14/180+W.arc.angle2*3.14/180)/2));
+          real y3=(u2dpi(W.arc.yc)+u2dpi(W.arc.radius)*sin((W.arc.angle1*3.14/180+W.arc.angle2*3.14/180)/2));
+          printf("      (Points\n"); 
+          printf("        (pt %f %f)\n", u2dpi(W.x1), u2dpi(-W.y1));
+          printf("        (pt %f %f)\n", x3, -y3);
+          printf("        (pt %f %f)\n", u2dpi(W.x2), u2dpi(-W.y2));
+          printf("      )\n");
+
+
+          printf("      (Name \"Shape\")\n"); 
+          printf("      (FontName \"Arial\")\n"); 
+          printf("      (Locked \"N\")\n"); 
+          printf("      (NetNumber -1)\n");
+          printf("      (VectorFont \"Y\")\n"); 
+          printf("      (FontWidth -2)\n");
+          printf("      (FontScale 1)\n");
+          printf("      (OldNumber %d)\n", ++numshape);
+          printf("    )\n");
+
+          }
+            else
+          {
+          printf("      (ShapeType 0)\n"); 
+          printf("      (FontSize 11)\n"); 
+          printf("      (BitmapIndex 0)\n"); 
+          printf("      (Group %d)\n", nomnets); 
+          printf("      (Color 8421504)\n"); 
+          printf("      (BrushColor 12632256)\n"); 
+          printf("      (PenWidth %f)\n", u2dpi(W.width)); 
+          printf("      (Points\n"); 
+          printf("        (pt %f %f)\n", u2dpi(W.x1), u2dpi(-W.y1));
+          printf("        (pt %f %f)\n", u2dpi(W.x2), u2dpi(-W.y2));
+          printf("      )\n");
+          printf("      (Name \"Shape\")\n"); 
+          printf("      (FontName \"Arial\")\n"); 
+          printf("      (Locked \"N\")\n"); 
+          printf("      (NetNumber -1)\n");
+          printf("      (VectorFont \"Y\")\n"); 
+          printf("      (FontWidth -2)\n");
+          printf("      (FontScale 1)\n");
+          printf("      (OldNumber %d)\n", ++numshape);
+          printf("    )\n");
+          }
+        }
+      }
+    nomnets++;
+    }
+  printf("  )\n");
+  printf("  (Groups\n");
+  printf("  )\n");
+  printf("  (CopperPours\n");
+  nomnets=0;
+  int nomcooper=0;
+  B.signals(S2)
+    {
+    S2.polygons(POLY)
+      {
+      printf("    (CopperPour\n");
+      printf("      (Enabled \"Y\")\n"); 
+      printf("      (Selected \"N\")\n"); 
+      printf("      (Poured \"N\")\n"); 
+      printf("      (LineWidth %f)\n", u2dpi(POLY.width)); 
+      printf("      (Clearance 0.61)\n"); 
+      printf("      (MinimumArea 3)\n"); 
+      printf("      (Group -1)\n"); 
+      for (int i=0; i<nomlay; i++)
+        if (layername[i]==POLY.layer)
+          {
+          printf("      (Layer %d)\n",i);
+          break;
+          }
+      printf("      (NetNumber %d)\n", nomnets); 
+      printf("      (Points\n"); 
+
+      POLY.contours(W2)        
+        {
+        if ((W2.layer>=1 && W2.layer<=16) ||W2.layer>99)
+          {
+          if (W2.arc)
+            {
+            if ((W2.x1==W2.arc.x1) && (W2.y1==W2.arc.y1))
+              {
+              printf("    (pt %f %f \"N\")\n",u2dpi(W2.arc.x1),u2dpi(-W2.arc.y1));
+              real rad=sqrt((u2dpi(W2.arc.xc)-u2dpi(W2.arc.x1))*(u2dpi(W2.arc.xc)-u2dpi(W2.arc.x1))+(u2dpi(W2.arc.yc)-u2dpi(W2.arc.y1))*(u2dpi(W2.arc.yc)-u2dpi(W2.arc.y1)));
+              real arctan1=W2.arc.angle1*Pi/180;
+              real arctan2=W2.arc.angle2*Pi/180;
+              real aat=10*Pi/180;
+              for (int i=0; i<round(abs(arctan1-arctan2)/aat); i++)
+                {
+                printf("    (pt %f %f \"Y\")\n", u2dpi(W2.arc.xc)+rad*cos(arctan1+i*aat),u2dpi(-W2.arc.yc)-rad*sin(arctan1+i*aat));
+                }
+              printf("    (pt %f %f \"N\")\n",u2dpi(W2.arc.x2),u2dpi(-W2.arc.y2));
+              }
+                else
+              {
+              printf("    (pt %f %f \"N\")\n",u2dpi(W2.arc.x2),u2dpi(-W2.arc.y2));
+              real rad=sqrt((u2dpi(W2.arc.xc)-u2dpi(W2.arc.x1))*(u2dpi(W2.arc.xc)-u2dpi(W2.arc.x1))+(u2dpi(W2.arc.yc)-u2dpi(W2.arc.y1))*(u2dpi(W2.arc.yc)-u2dpi(W2.arc.y1)));
+              real arctan1=W2.arc.angle2*Pi/180;
+              real arctan2=W2.arc.angle1*Pi/180;
+              real aat=10*Pi/180;
+              for (int i=0; i<round(abs(arctan1-arctan2)/aat); i++)
+                {
+                printf("    (pt %f %f \"Y\")\n", u2dpi(W2.arc.xc)+rad*cos(arctan1-i*aat),u2dpi(-W2.arc.yc)-rad*sin(arctan1-i*aat));
+                }
+              printf("    (pt %f %f \"N\")\n",u2dpi(W2.arc.x1),u2dpi(-W2.arc.y1));
+              }
+            }
+              else
+            {
+            printf("        (pt %f %f)\n", u2dpi(W2.x1), u2dpi(-W2.y1));
+            printf("        (pt %f %f)\n", u2dpi(W2.x2), u2dpi(-W2.y2));
+            }
+          }
+        }
+      printf("      )\n");
+      printf("      (Lines\n");
+/*
+      POLY.fillings(W2)        
+        {
+        if ((W2.layer>=1 && W2.layer<=16) || W2.layer>99)
+          {
+          if (W2.arc)
+            {
+            }
+              else
+            {
+            printf("        (pt %f %f %f %f)\n", u2dpi(W2.x1), u2dpi(-W2.y1), u2dpi(W2.x2), u2dpi(-W2.y2));
+            }
+          }
+        }
+*/
+      printf("      )\n");
+      printf("      (Polygons\n      )\n");
+      printf("      (Type 0)\n");
+      printf("      (Spoke 0)\n");
+      printf("      (LineSpacing 1.905)\n");
+      printf("      (SpokeWidth 0.99)\n");
+      printf("      (SpokeLine\n      )\n");
+      printf("      (UseNetClearance \"N\")\n");
+      printf("      (HideConnections \"N\")\n");
+      printf("      (Locked \"N\")\n");
+      printf("      (OldNumber %d)\n",nomcooper++);
+      printf("    )\n");
+      }
+    nomnets++;
+    }
+  printf("  )\n");
+  }
+  printf(")");
+}
